@@ -3,9 +3,6 @@ gulp-jasmine-phantom
 
 A gulp plugin that runs Jasmine tests with either PhantomJS or minijasminenode2.
 
-| :sparkles: | :star2: |
-| ---------- | ------- |
-
 Install
 -----
 
