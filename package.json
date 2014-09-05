@@ -1,0 +1,16 @@
+{
+  "name": "gulp-jasmine-phantom",
+  "version": "0.0.1",
+  "description": "Run Jasmine tests",
+  "license": "MIT",
+  "repository": "dflynn15/gulp-jasmine-phantom",
+  "dependencies": {
+    "gulp-util": "^3.0.0",
+    "minijasminenode2": "^1.0.0",
+    "phantomjs": "~1.9.7-1"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.7",
+    "jasmine": "^2.0.1"
+  }
+}
