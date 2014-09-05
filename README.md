@@ -6,13 +6,13 @@ A gulp plugin that runs Jasmine tests with either PhantomJS or minijasminenode2.
 Install
 -----
 
-``sh
+```
 $ npm install --save-dev gulp-jasmine-phantom
 ```
 
 Usage
 -----
-``js
+```
 var gulp = require('gulp');
 var jasmine = require('gulp-jasmine-phantom');
 
