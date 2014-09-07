@@ -32,4 +32,5 @@ Team Members
 ------------
 
 * Daniel Flynn
+* Rob Tarr
 * You!
