@@ -7,7 +7,7 @@ module.exports = function (options) {
   options = options || {};
   
   var miniJasmineLib = require('minijasminenode2');
-
+  
   return through.obj(
       // -----------------
       // Transform function
@@ -29,8 +29,13 @@ module.exports = function (options) {
 			    callback(new gutil.PluginError('gulp-jasmine-phantom', 'Streaming not supported'));
 			    return;
 		    }
-
-        miniJasmineLib.addSpecs(file.path);
+        
+        // If they are integration tests than use phantom
+        if(!!options.integration) {
+           
+        } else {
+          miniJasmineLib.addSpecs(file.path);
+        }
         callback(null, file);
     }, 
     // -----------------
