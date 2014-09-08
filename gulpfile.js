@@ -17,6 +17,5 @@ gulp.task('test-integration', function() {
 });
 
 gulp.task('dev', function() {
-  
-    watch('./*.js').pipe(jasmine())
-});<LeftMouse>
+    gulp.watch('./*.js', ['default']);
+});
