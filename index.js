@@ -57,12 +57,10 @@ module.exports = function (options) {
               if (stderr !== '') {
                   gutil.log('gulp-jasmine-phantom: Failed to open test runner ' + gutil.colors.blue(childArgs[1]));
                   gutil.log(gutil.colors.red('error: '), stderr);
-                  this.emit('error', new gutil.PluginError('gulp-jasmine-phantom', stderr));
               }
 
               if (error !== null) {
                   gutil.log('gulp-jasmine-phantom: ' + gutil.colors.red("\u2716 ") + 'Assertions failed in ' + gutil.colors.blue(childArgs[1]));
-                  this.emit('error', new gutil.PluginError('gulp-jasmine-phantom', error));
               }
             }.bind(this));
           });
