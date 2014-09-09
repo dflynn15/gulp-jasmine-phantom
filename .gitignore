@@ -1,1 +1,3 @@
 node_modules
+/lib/specRunner.html
+.DS_STORE

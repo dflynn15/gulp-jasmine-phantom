@@ -11,7 +11,8 @@ module.exports = function (options) {
   
   if(!!options.integration) {
     var phantomjs = require('phantom'),
-        filePaths = [];
+        filePaths = [],
+        specRunner;
     gutil.log('Running Jasmine with PhantomJS');
     
     return through.obj(
@@ -30,13 +31,38 @@ module.exports = function (options) {
         filePaths.push(file.path);
         callback(null, file);
       }, function (callback) {
+  
         // Create the specRunner.html file
         fs.readFile('./lib/specRunner.handlebars', 'utf8', function(error, data) {
           if (error) throw error;
-          var specFile = handlebar.compile(data),
-              specRunner = specFile({files: filePaths});
 
-          console.log(specRunner);
+          var specData = handlebar.compile(data),
+              specCompiled = specData({files: filePaths});
+          
+          fs.writeFile('./lib/specRunner.html', specData({files: filePaths}), function(error) {
+            if (error) throw error;
+
+            var childArgs = [
+              path.join(__dirname, '/lib/jasmine-runner.js'),
+              path.join(__dirname, '/lib/specRunner.html')
+            ];
+            
+            childProcess.execFile('phantomjs', childArgs, function(error, stdout, stderr) {
+              gutil.log('Start running specs');
+              console.log(stdout);
+
+              if (stderr !== '') {
+                  gutil.log('gulp-jasmine2-phantomjs: Failed to open test runner ' + gutil.colors.blue(file.relative));
+                  gutil.log(gutil.colors.red('error: '), stderr);
+                  this.emit('error', new gutil.PluginError('gulp-jasmine2-phantomjs', stderr));
+              }
+
+              if (error !== null) {
+                  gutil.log('gulp-jasmine2-phantomjs: ' + gutil.colors.red("\u2716 ") + 'Assertions failed in ' + gutil.colors.blue(file.relative));
+                  this.emit('error', new gutil.PluginError('gulp-jasmine2-phantomjs', err));
+              }
+            }.bind(this));
+          });
         });
 
       } 

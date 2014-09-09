@@ -3,6 +3,14 @@ gulp-jasmine-phantom
 
 A gulp plugin that runs Jasmine tests with either PhantomJS or minijasminenode2.
 
+Dependencies
+------------
+
+Before you install `gulp-jasmine-phantom` please enusre that you have PhantomJS
+installed on your machine. The plugin assumes that the `phantomjs` binary is
+available in the PATH and executable from the command line.
+
+
 Install
 -----
 

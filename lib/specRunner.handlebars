@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="stylesheet" type="text/css" href="../vendor/jasmine.css" />
+<script type="text/javascript" src="../vendor/jasmine.js"></script>
+<script type="text/javascript" src="../vendor/jasmine-html.js"></script>
+<script type="text/javascript" src="../vendor/console.js"></script>
+<script type="text/javascript" src="../vendor/boot.js"></script>
 {{#each files}}
   <script type="text/javascript" src="{{this}}"></script>
 {{/each}}
+
+<script type"text/javascript" src="./specRunner.js"></script>
 </head>
 <body>
   
