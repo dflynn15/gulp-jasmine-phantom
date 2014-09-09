@@ -17,5 +17,5 @@ gulp.task('test-integration', function() {
 });
 
 gulp.task('dev', function() {
-    gulp.watch('./*.js', ['default']);
+    gulp.watch('./*.js', ['test-integration']);
 });
