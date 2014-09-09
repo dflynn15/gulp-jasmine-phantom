@@ -20,14 +20,29 @@ $ npm install --save-dev gulp-jasmine-phantom
 
 Usage
 -----
+
+Basic useage:
 ```
 var gulp = require('gulp');
 var jasmine = require('gulp-jasmine-phantom');
 
 gulp.task('default', function () {
-      return gulp.src('spec/test.js')
+  return gulp.src('spec/test.js')
           .pipe(jasmine());
-          });
+});
+```
+
+For integrations tests:
+```
+var gulp = require('gulp');
+var jasmine = require('gulp-jasmine-phantom');
+
+gulp.task('default', function() {
+  return gulp.src('spec/test.js')
+          .pipe(jasmine({
+            integration: true
+          }));
+});
 ```
 
 Technologies Used

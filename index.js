@@ -4,26 +4,27 @@ var path = require('path'),
     through = require('through2'),
     handlebar = require('handlebars'),
     fs = require('fs'),
-    childProcess = require('child_process');
+    execFile = require('child_process').execFile;
 
 module.exports = function (options) {
   options = options || {};
-  
+ 
+  //If we are processing integration tests with phantomjs
   if(!!options.integration) {
-    var phantomjs = require('phantom'),
-        filePaths = [],
-        specRunner;
+
+    // Reference to the file paths piped in
+    var filePaths = [];
     gutil.log('Running Jasmine with PhantomJS');
     
     return through.obj(
       function (file, encoding, callback) {
-        var phantomPath = phantomjs.path;
         
         if (file.isNull()) {
           callback(null, file);
           return;
         }
-
+        
+        // Currently not supporting streams
         if (file.isStream()) {
           callback(new gutil.PluginError('gulp-jasmine-phantom', 'Streaming not supported'));
         }
@@ -32,13 +33,14 @@ module.exports = function (options) {
         callback(null, file);
       }, function (callback) {
   
-        // Create the specRunner.html file
+        // Create the specRunner.html file from the template
         fs.readFile('./lib/specRunner.handlebars', 'utf8', function(error, data) {
           if (error) throw error;
 
           var specData = handlebar.compile(data),
               specCompiled = specData({files: filePaths});
           
+          // Write out the spec runner file
           fs.writeFile('./lib/specRunner.html', specData({files: filePaths}), function(error) {
             if (error) throw error;
 
@@ -47,19 +49,20 @@ module.exports = function (options) {
               path.join(__dirname, '/lib/specRunner.html')
             ];
             
-            childProcess.execFile('phantomjs', childArgs, function(error, stdout, stderr) {
+            // Execute the file with phantomjs
+            execFile('phantomjs', childArgs, function(error, stdout, stderr) {
               gutil.log('Start running specs');
               console.log(stdout);
 
               if (stderr !== '') {
-                  gutil.log('gulp-jasmine2-phantomjs: Failed to open test runner ' + gutil.colors.blue(file.relative));
+                  gutil.log('gulp-jasmine-phantom: Failed to open test runner ' + gutil.colors.blue(childArgs[1]));
                   gutil.log(gutil.colors.red('error: '), stderr);
-                  this.emit('error', new gutil.PluginError('gulp-jasmine2-phantomjs', stderr));
+                  this.emit('error', new gutil.PluginError('gulp-jasmine-phantom', stderr));
               }
 
               if (error !== null) {
-                  gutil.log('gulp-jasmine2-phantomjs: ' + gutil.colors.red("\u2716 ") + 'Assertions failed in ' + gutil.colors.blue(file.relative));
-                  this.emit('error', new gutil.PluginError('gulp-jasmine2-phantomjs', err));
+                  gutil.log('gulp-jasmine-phantom: ' + gutil.colors.red("\u2716 ") + 'Assertions failed in ' + gutil.colors.blue(childArgs[1]));
+                  this.emit('error', new gutil.PluginError('gulp-jasmine-phantom', error));
               }
             }.bind(this));
           });
