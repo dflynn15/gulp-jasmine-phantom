@@ -1,9 +1,29 @@
 {
   "name": "gulp-jasmine-phantom",
-  "version": "0.0.1",
-  "description": "Run Jasmine tests",
+  "version": "1.0.0",
+  "description": "Jasmine 2.0 suite runner, optionally with PhantomJS",
   "license": "MIT",
   "repository": "dflynn15/gulp-jasmine-phantom",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "gulpplugin",
+    "jasmine",
+    "phantom",
+    "test",
+    "testing",
+    "unit",
+    "integration",
+    "framework",
+    "runner",
+    "tdd",
+    "bdd",
+    "spec"
+  ],
   "dependencies": {
     "gulp-util": "^3.0.0",
     "minijasminenode2": "dflynn15/minijasminenode",

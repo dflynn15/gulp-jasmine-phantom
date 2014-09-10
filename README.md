@@ -10,6 +10,7 @@ Before you install `gulp-jasmine-phantom` please enusre that you have PhantomJS
 installed on your machine. The plugin assumes that the `phantomjs` binary is
 available in the PATH and executable from the command line.
 
+**If you do not have `phantomjs` installed please install following [these directions.](http://phantomjs.org/download.html)
 
 Install
 -----
@@ -71,6 +72,5 @@ Technologies Used
 Team Members
 ------------
 
-* Daniel Flynn
-* Rob Tarr
-* You!
+* [https://github.com/dflynn15](Daniel Flynn)
+* [https://github.com/robtarr](Rob Tarr)
