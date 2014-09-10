@@ -106,9 +106,9 @@ module.exports = function (options) {
       // -----------------
       function(callback) {
         try {
-          miniJasmineLib.addReporter(new terminalReporter({}));
           miniJasmineLib.executeSpecs({
             reporter: new terminalReporter({}),
+            showColors: true,
             includeStackTrace: true,
             onComplete: function(passed) {
               if(passed) {

@@ -13,7 +13,7 @@ gulp.task('test-integration', function() {
   return gulp.src('integration.js')
     .pipe(jasmine({
       integration: true,
-      keepRunner: true
+      keepRunner: false
     }));
 });
 
