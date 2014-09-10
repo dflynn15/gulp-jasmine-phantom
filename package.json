@@ -7,7 +7,6 @@
   "dependencies": {
     "gulp-util": "^3.0.0",
     "minijasminenode2": "dflynn15/minijasminenode",
-    "phantomjs": "~1.9.7-1",
     "through2": "^0.6.1",
     "handlebars": "^2.0.0"
   },
@@ -16,7 +15,6 @@
     "gulp": "^3.8.7",
     "gulp-watch": "^1.0.2",
     "jasmine": "^2.0.1",
-    "jasmine-fixture": "^1.0.8",
-    "phantom": "^0.6.5"
+    "jasmine-fixture": "^1.0.8"
   }
 }
