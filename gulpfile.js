@@ -5,12 +5,12 @@ var gulp = require('gulp'),
 
 // Default unit test
 gulp.task('default', function () {
-	return gulp.src('fixture.js').pipe(jasmine());
+	return gulp.src('specs/unit/**.js').pipe(jasmine());
 });
 
 // Passing options in specifying integration tests
 gulp.task('test-integration', function() {
-  return gulp.src('integration.js')
+  return gulp.src('specs/integration.js')
     .pipe(jasmine({
       integration: true,
       keepRunner: false
