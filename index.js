@@ -45,7 +45,7 @@ module.exports = function (options) {
               specCompiled = specData({files: filePaths});
           
           // Write out the spec runner file
-          fs.writeFile('./lib/specRunner.html', specData({files: filePaths}), function(error) {
+          fs.writeFile(path.join(__dirname, '/lib/specRunner.html'), specData({files: filePaths}), function(error) {
             if (error) throw error;
 
             var childArgs = [
@@ -72,57 +72,56 @@ module.exports = function (options) {
 
       } 
     );
-  } else {
-    var miniJasmineLib = require('minijasminenode2'),
-        terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
-    gutil.log('Running Jasmine with minijasminenode2');
-    return through.obj(
-        // -----------------
-        // Transform function
-        // Takes in each file and adds it to the list of specs
-        // -----------------
-        function(file, encoding, callback) {
-          // If file is null exit with callback
-          if (file.isNull()) {
-            callback(null, file);
-            return;
-          }
-          
-          // -----------------
-          // Currently do not support streams
-          // -----------------
-          if (file.isStream()) {
-            callback(new gutil.PluginError('gulp-jasmine-phantom', 'Streaming not supported'));
-            return;
-          }
-          
-
-        miniJasmineLib.addSpecs(file.path);
-        callback(null, file);
-      }, 
-      // -----------------
-      // Flush function
-      // Finishes up the stream and runs all the test cases that have been provided
-      // -----------------
-      function(callback) {
-        try {
-          miniJasmineLib.executeSpecs({
-            reporter: new terminalReporter({}),
-            showColors: true,
-            includeStackTrace: true,
-            onComplete: function(passed) {
-              if(passed) {
-                callback(null);
-              } else {
-                callback(new gutil.PluginError('gulp-jasmine-phantom', 'Tests failed', {showStack: false}));
-              }
-            }
-          });
-        } catch(error) {
-          callback(new gutil.PluginError('gulp-jasmine-phantom', error));
-        }
-      }
-    );
   }
 
+  var miniJasmineLib = require('minijasminenode2'),
+      terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
+  gutil.log('Running Jasmine with minijasminenode2');
+  return through.obj(
+      // -----------------
+      // Transform function
+      // Takes in each file and adds it to the list of specs
+      // -----------------
+      function(file, encoding, callback) {
+        // If file is null exit with callback
+        if (file.isNull()) {
+          callback(null, file);
+          return;
+        }
+        
+        // -----------------
+        // Currently do not support streams
+        // -----------------
+        if (file.isStream()) {
+          callback(new gutil.PluginError('gulp-jasmine-phantom', 'Streaming not supported'));
+          return;
+        }
+        
+
+      miniJasmineLib.addSpecs(file.path);
+      callback(null, file);
+    }, 
+    // -----------------
+    // Flush function
+    // Finishes up the stream and runs all the test cases that have been provided
+    // -----------------
+    function(callback) {
+      try {
+        miniJasmineLib.executeSpecs({
+          reporter: new terminalReporter({}),
+          showColors: true,
+          includeStackTrace: true,
+          onComplete: function(passed) {
+            if(passed) {
+              callback(null);
+            } else {
+              callback(new gutil.PluginError('gulp-jasmine-phantom', 'Tests failed', {showStack: false}));
+            }
+          }
+        });
+      } catch(error) {
+        callback(new gutil.PluginError('gulp-jasmine-phantom', error));
+      }
+    }
+  );
 };
