@@ -6,4 +6,15 @@ describe('integration', function() {
   it('should fail', function() {
     expect(1 + 1).toEqual(3);
   });
+
+  xit('should be pending', function() {
+  
+  });
+
+  describe('a failure', function() {
+  
+    it('should fail again', function() {
+      expect(1 + 3).toEqual(3);
+    });
+  });
 });

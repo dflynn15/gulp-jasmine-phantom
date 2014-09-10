@@ -12,7 +12,8 @@ gulp.task('default', function () {
 gulp.task('test-integration', function() {
   return gulp.src('integration.js')
     .pipe(jasmine({
-      integration: true
+      integration: true,
+      keepRunner: true
     }));
 });
 

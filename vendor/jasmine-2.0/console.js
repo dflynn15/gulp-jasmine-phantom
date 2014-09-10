@@ -49,6 +49,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
       failureCount,
       failedSpecs = [],
       pendingCount,
+      suiteIndentation = 0,
       ansi = {
         green: '\x1B[32m',
         red: '\x1B[31m',
@@ -68,31 +69,50 @@ getJasmineRequireObj().ConsoleReporter = function() {
     this.jasmineDone = function() {
       printNewline();
       for (var i = 0; i < failedSpecs.length; i++) {
+        if(!i) {
+          print('Failures:');
+        }
         specFailureDetails(failedSpecs[i]);
       }
+      
+      printNewline();
 
       if(specCount > 0) {
-        printNewline();
 
-        var specCounts = specCount + ' ' + plural('spec', specCount) + ', ' +
-          failureCount + ' ' + plural('failure', failureCount);
+        var successCount = specCount - failureCount,
+            specCounts = specCount + ' ' + plural('spec', specCount);
 
+        if(successCount) {
+          specCounts += ', ' + colored('green',  successCount + ' ' + plural('success', successCount));
+        }
+        
+        if(failureCount) {
+          specCounts += ', ' + colored('red', failureCount + ' ' + plural('failure', failureCount));
+        }
+        
         if (pendingCount) {
-          specCounts += ', ' + pendingCount + ' pending ' + plural('spec', pendingCount);
+          specCounts += ', ' + colored('yellow', pendingCount + ' pending ');
         }
 
         print(specCounts);
       } else {
         print('No specs found');
       }
-
-      printNewline();
+      
       var seconds = timer.elapsed() / 1000;
       print('Finished in ' + seconds + ' ' + plural('second', seconds));
 
-      printNewline();
 
       onComplete(failureCount === 0);
+    };
+
+    this.suiteStarted = function(suite) {
+      print(indent(suite.fullName, suiteIndentation));
+      suiteIndentation += 2; 
+    };
+
+    this.suiteDone = function(suite) {
+      suiteIndentation -= 2;
     };
 
     this.specDone = function(result) {
@@ -100,19 +120,19 @@ getJasmineRequireObj().ConsoleReporter = function() {
 
       if (result.status == 'pending') {
         pendingCount++;
-        print(colored('yellow', '*'));
+        print(indent(colored('yellow', '* ' + result.fullName), suiteIndentation));
         return;
       }
 
       if (result.status == 'passed') {
-        print(colored('green', '.'));
+        print(indent(colored('green', '\u2714 ' + result.fullName), suiteIndentation));
         return;
       }
 
       if (result.status == 'failed') {
         failureCount++;
         failedSpecs.push(result);
-        print(colored('red', 'F'));
+        print(indent(colored('red', '\u2716 ' + result.fullName), suiteIndentation));
       }
     };
 
@@ -127,6 +147,9 @@ getJasmineRequireObj().ConsoleReporter = function() {
     }
 
     function plural(str, count) {
+      if(str[str.length-1] === 's') {
+        return count == 1 ? str : str + 'es';
+      }
       return count == 1 ? str : str + 's';
     }
 
@@ -148,17 +171,14 @@ getJasmineRequireObj().ConsoleReporter = function() {
     }
 
     function specFailureDetails(result) {
-      printNewline();
-      print(result.fullName);
+      print(indent(result.fullName, 2));
 
       for (var i = 0; i < result.failedExpectations.length; i++) {
         var failedExpectation = result.failedExpectations[i];
-        printNewline();
-        print(indent(failedExpectation.message, 2));
-        print(indent(failedExpectation.stack, 2));
+        print(indent(colored('red', failedExpectation.message), 4));
+        //print(indent(failedExpectation.stack, 2));
       }
-
-      printNewline();
+      
     }
   }
 

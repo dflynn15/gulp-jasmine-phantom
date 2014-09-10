@@ -8,6 +8,10 @@ var path = require('path'),
 
 module.exports = function (options) {
   options = options || {};
+
+  var cleanup = function(path) {
+    fs.unlink(path);
+  };
  
   //If we are processing integration tests with phantomjs
   if(!!options.integration) {
@@ -59,8 +63,8 @@ module.exports = function (options) {
                   gutil.log(gutil.colors.red('error: '), stderr);
               }
 
-              if (error !== null) {
-                  gutil.log('gulp-jasmine-phantom: ' + gutil.colors.red("\u2716 ") + 'Assertions failed in ' + gutil.colors.blue(childArgs[1]));
+              if(options.keepRunner === undefined || options.keepRunner === false) {
+                cleanup(childArgs[1]);
               }
             }.bind(this));
           });
@@ -98,8 +102,6 @@ module.exports = function (options) {
       // -----------------
       // Flush function
       // Finishes up the stream and runs all the test cases that have been provided
-      //
-      // TODO: Run unit tests and integration tests seperately
       // -----------------
       function(callback) {
         try {
