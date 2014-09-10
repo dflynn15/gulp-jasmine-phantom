@@ -6,7 +6,7 @@
   "repository": "dflynn15/gulp-jasmine-phantom",
   "dependencies": {
     "gulp-util": "^3.0.0",
-    "minijasminenode2": "^1.0.0",
+    "minijasminenode2": "dflynn15/minijasminenode",
     "phantomjs": "~1.9.7-1",
     "through2": "^0.6.1",
     "handlebars": "^2.0.0"

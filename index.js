@@ -73,7 +73,8 @@ module.exports = function (options) {
       } 
     );
   } else {
-    var miniJasmineLib = require('minijasminenode2');
+    var miniJasmineLib = require('minijasminenode2'),
+        terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
     gutil.log('Running Jasmine with minijasminenode2');
     return through.obj(
         // -----------------
@@ -105,8 +106,9 @@ module.exports = function (options) {
       // -----------------
       function(callback) {
         try {
+          miniJasmineLib.addReporter(new terminalReporter({}));
           miniJasmineLib.executeSpecs({
-            isVerbose: true,
+            reporter: new terminalReporter({}),
             includeStackTrace: true,
             onComplete: function(passed) {
               if(passed) {
