@@ -38,7 +38,7 @@ module.exports = function (options) {
       }, function (callback) {
   
         // Create the specRunner.html file from the template
-        fs.readFile('./lib/specRunner.handlebars', 'utf8', function(error, data) {
+        fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
           if (error) throw error;
 
           var specData = handlebar.compile(data),
