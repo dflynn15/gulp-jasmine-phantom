@@ -20,9 +20,11 @@ $ npm install --save-dev gulp-jasmine-phantom
 
 Usage
 -----
+By default `gulp-jasmine-phantom` runs your tests with `minijasminenode` and not `phantomjs`.
+This is in an effort to keep your tasks running as quickly as possible!
 
 Basic useage:
-```
+```javascript
 var gulp = require('gulp');
 var jasmine = require('gulp-jasmine-phantom');
 
@@ -31,9 +33,9 @@ gulp.task('default', function () {
           .pipe(jasmine());
 });
 ```
+To use `phantomjs` for tests (ie: integration tests) use the following setup:
 
-For integrations tests:
-```
+```javascript
 var gulp = require('gulp');
 var jasmine = require('gulp-jasmine-phantom');
 
@@ -44,6 +46,21 @@ gulp.task('default', function() {
           }));
 });
 ```
+
+Options
+-------
+
+#### integration
+Type: `boolean`
+Default: false
+
+Run your tests with `phantomjs`
+
+#### keepRunner
+Type: `boolean`
+Default: false
+
+Keep the `specRunner.html` file after build
 
 Technologies Used
 -----------------
