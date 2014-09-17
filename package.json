@@ -33,7 +33,6 @@
   "devDependencies": {
     "JSON": "^1.0.0",
     "gulp": "^3.8.7",
-    "gulp-watch": "^1.0.2",
     "jasmine": "^2.0.1",
     "jasmine-fixture": "^1.0.8"
   }

@@ -1,6 +1,8 @@
 'use strict';
+
+// Jasmine references the index.js in this repository
 var gulp = require('gulp'),
-  jasmine = require('./'),
+  jasmine = require('../'),
   watch = require('gulp-watch');
 
 // Default unit test
@@ -10,7 +12,7 @@ gulp.task('default', function () {
 
 // Passing options in specifying integration tests
 gulp.task('test-integration', function() {
-  return gulp.src('specs/integration.js')
+  return gulp.src('specs/integration/integration.js')
     .pipe(jasmine({
       integration: true,
       keepRunner: false
