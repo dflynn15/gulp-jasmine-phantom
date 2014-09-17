@@ -72,5 +72,5 @@ Technologies Used
 Team Members
 ------------
 
-* [https://github.com/dflynn15](Daniel Flynn)
-* [https://github.com/robtarr](Rob Tarr)
+* [Daniel Flynn](https://github.com/dflynn15)
+* [Rob Tarr](https://github.com/robtarr)
