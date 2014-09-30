@@ -77,10 +77,11 @@ Default: false
 Run your tests with `phantomjs`
 
 #### keepRunner
-Type: `boolean`
+Type: `boolean | string`
 Default: false
 
-Keep the `specRunner.html` file after build
+**Only used while `integration` is true
+Keep the `specRunner.html` file after build. If given a string, it will keep the runner at the string path.
 
 Technologies Used
 -----------------

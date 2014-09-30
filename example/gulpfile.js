@@ -19,6 +19,15 @@ gulp.task('test-integration', function() {
     }));
 });
 
+//Keeps spec runner at a specific path
+gulp.task('test-path', function() {
+  return gulp.src('specs/integration/integration.js')
+    .pipe(jasmine({
+      integration: true,
+      keepRunner: './'
+    }));
+});
+
 gulp.task('dev', function() {
     gulp.watch('./*.js', ['test-integration']);
 });
