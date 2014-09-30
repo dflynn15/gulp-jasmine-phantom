@@ -48,6 +48,25 @@ gulp.task('default', function() {
 });
 ```
 
+Also, remember you can always run any multitude of tests using different Gulp tasks. For example, running unit tests and integration tests asynchronously.
+
+```javascript
+var gulp = require('gulp');
+var jasmine = require('gulp-jasmine-phantom');
+
+gulp.task('unitTests', function () {
+  return gulp.src('spec/test.js')
+          .pipe(jasmine());
+});
+
+gulp.task('integrationTests', function() {
+  return gulp.src('spec/test.js')
+          .pipe(jasmine({
+            integration: true
+          }));
+});
+```
+
 Options
 -------
 
