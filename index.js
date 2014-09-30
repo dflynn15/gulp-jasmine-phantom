@@ -5,6 +5,7 @@ var path = require('path'),
     handlebar = require('handlebars'),
     fs = require('fs'),
     execFile = require('child_process').execFile,
+    filePaths = [],
     jasmineCss = path.join(__dirname, '/vendor/jasmine-2.0/jasmine.css'),
     jasmineJs = [
       path.join(__dirname, '/vendor/jasmine-2.0/jasmine.js'),
@@ -48,16 +49,38 @@ module.exports = function (options) {
   };
 
   // Write out the spec runner file
-  var createRunner = function(specPath, specCompiled) {
-    fs.writeFile(specPath, specCompiled ,function(error) {
+  var createRunner = function(newSpecPath, specCompiled, runFile) {
+    fs.writeFile(newSpecPath, specCompiled ,function(error) {
+      if (error) throw error;
+      
+      if(runFile) {
+        var childArgs = [
+          path.join(__dirname, '/lib/jasmine-runner.js'),
+          newSpecPath
+        ];
+        runPhantom(childArgs);
+      }
+    });
+  };
+
+  var compileRunner = function(integrationTest) {
+    fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
       if (error) throw error;
 
-      var childArgs = [
-        path.join(__dirname, '/lib/jasmine-runner.js'),
-        path.join(__dirname, '/lib/specRunner.html')
-      ];
+      // Create the compile version of the specRunner from Handlebars
+      var specData = handlebar.compile(data),
+          specCompiled = specData({
+            files: filePaths, 
+            jasmine_css: jasmineCss, 
+            jasmine_js: jasmineJs,
+            spec_runner: specRunner 
+          });
       
-      runPhantom(childArgs);
+      if(options.keepRunner !== undefined && typeof options.keepRunner === 'string') {
+        specPath = path.join(path.resolve(options.keepRunner), '/specRunner.html');
+      }
+
+      createRunner(specPath, specCompiled, integrationTest);
     });
   };
  
@@ -67,7 +90,6 @@ module.exports = function (options) {
   if(!!options.integration) {
 
     // Reference to the file paths piped in
-    var filePaths = [];
     gutil.log('Running Jasmine with PhantomJS');
     
     return through.obj(
@@ -86,37 +108,7 @@ module.exports = function (options) {
         filePaths.push(file.path);
         callback(null, file);
       }, function (callback) {
-  
-        // Create the specRunner.html file from the template
-        fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
-          if (error) throw error;
-
-          // Create the compile version of the specRunner from Handlebars
-          var specData = handlebar.compile(data),
-              specCompiled = specData({
-                files: filePaths, 
-                jasmine_css: jasmineCss, 
-                jasmine_js: jasmineJs,
-                spec_runner: specRunner 
-              });
-          
-          if(options.keepRunner !== undefined && typeof options.keepRunner === 'string') {
-            specPath = path.join(path.resolve(options.keepRunner), '/specRunner.html');
-          }
-
-          fs.writeFile(specPath, specCompiled ,function(error) {
-            if (error) throw error;
-
-            var childArgs = [
-              path.join(__dirname, '/lib/jasmine-runner.js'),
-              specPath
-            ];
-            
-            runPhantom(childArgs);
-          });
-          
-        });
-
+        compileRunner(true);
       } 
     );
   }
@@ -138,6 +130,7 @@ module.exports = function (options) {
         }
         
       miniJasmineLib.addSpecs(file.path);
+      filePaths.push(file.path);
       callback(null, file);
     }, 
     function(callback) {
@@ -154,6 +147,11 @@ module.exports = function (options) {
             }
           }
         });
+
+        if(options.keepRunner) {
+          compileRunner();
+        }
+        
       } catch(error) {
         callback(new gutil.PluginError('gulp-jasmine-phantom', error));
       }
