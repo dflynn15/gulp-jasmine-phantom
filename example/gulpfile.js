@@ -10,6 +10,13 @@ gulp.task('default', function () {
 	return gulp.src('specs/unit/**.js').pipe(jasmine());
 });
 
+gulp.task('test-unit-path', function() {
+  return gulp.src('specs/unit/**.js')
+    .pipe(jasmine({
+      keepRunner: './'
+    }));
+});
+
 // Passing options in specifying integration tests
 gulp.task('test-integration', function() {
   return gulp.src('specs/integration/integration.js')
@@ -27,6 +34,7 @@ gulp.task('test-path', function() {
       keepRunner: './'
     }));
 });
+
 
 gulp.task('dev', function() {
     gulp.watch('./*.js', ['test-integration']);
