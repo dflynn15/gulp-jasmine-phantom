@@ -4,7 +4,16 @@ var path = require('path'),
     through = require('through2'),
     handlebar = require('handlebars'),
     fs = require('fs'),
-    execFile = require('child_process').execFile;
+    execFile = require('child_process').execFile,
+    jasmineCss = path.join(__dirname, '/vendor/jasmine-2.0/jasmine.css'),
+    jasmineJs = [
+      path.join(__dirname, '/vendor/jasmine-2.0/jasmine.js'),
+      path.join(__dirname, '/vendor/jasmine-2.0/jasmine-html.js'),
+      path.join(__dirname, '/vendor/jasmine-2.0/console.js'),
+      path.join(__dirname, '/vendor/jasmine-2.0/boot.js')
+    ],
+    specPath = path.join(__dirname, '/lib/specRunner.html'),
+    specRunner = path.join(__dirname, '/lib/specRunner.js');
 
 module.exports = function (options) {
   options = options || {};
@@ -37,8 +46,24 @@ module.exports = function (options) {
         }
       }.bind(this));
   };
+
+  // Write out the spec runner file
+  var createRunner = function(specPath, specCompiled) {
+    fs.writeFile(specPath, specCompiled ,function(error) {
+      if (error) throw error;
+
+      var childArgs = [
+        path.join(__dirname, '/lib/jasmine-runner.js'),
+        path.join(__dirname, '/lib/specRunner.html')
+      ];
+      
+      runPhantom(childArgs);
+    });
+  };
  
-  //If we are processing integration tests with phantomjs
+  /**
+  * If we are processing integration tests with phantomjs
+  **/
   if(!!options.integration) {
 
     // Reference to the file paths piped in
@@ -68,19 +93,28 @@ module.exports = function (options) {
 
           // Create the compile version of the specRunner from Handlebars
           var specData = handlebar.compile(data),
-              specCompiled = specData({files: filePaths});
+              specCompiled = specData({
+                files: filePaths, 
+                jasmine_css: jasmineCss, 
+                jasmine_js: jasmineJs,
+                spec_runner: specRunner 
+              });
           
-          // Write out the spec runner file
-          fs.writeFile(path.join(__dirname, '/lib/specRunner.html'), specData({files: filePaths}), function(error) {
+          if(options.keepRunner !== undefined && typeof options.keepRunner === 'string') {
+            specPath = path.join(path.resolve(options.keepRunner), '/specRunner.html');
+          }
+
+          fs.writeFile(specPath, specCompiled ,function(error) {
             if (error) throw error;
 
             var childArgs = [
               path.join(__dirname, '/lib/jasmine-runner.js'),
-              path.join(__dirname, '/lib/specRunner.html')
+              specPath
             ];
             
             runPhantom(childArgs);
           });
+          
         });
 
       } 

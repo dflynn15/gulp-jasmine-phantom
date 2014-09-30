@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" type="text/css" href="../vendor/jasmine-2.0/jasmine.css" />
-<script type="text/javascript" src="../vendor/jasmine-2.0/jasmine.js"></script>
-<script type="text/javascript" src="../vendor/jasmine-2.0/jasmine-html.js"></script>
-<script type="text/javascript" src="../vendor/jasmine-2.0/console.js"></script>
-<script type="text/javascript" src="../vendor/jasmine-2.0/boot.js"></script>
+<link rel="stylesheet" type="text/css" href="{{jasmine_css}}" />
+{{#each jasmine_js}}
+  <script type="text/javascript" src="{{this}}"></script>
+{{/each}}
 {{#each files}}
   <script type="text/javascript" src="{{this}}"></script>
 {{/each}}
 
-<script type"text/javascript" src="specRunner.js"></script>
+<script type"text/javascript" src="{{spec_runner}}"></script>
 </head>
 <body>
   
