@@ -108,7 +108,11 @@ module.exports = function (options) {
         filePaths.push(file.path);
         callback(null, file);
       }, function (callback) {
-        compileRunner(true);
+        try {
+          compileRunner(true);
+        } catch(error) {
+          callback(new gutil.PluginError('gulp-jasmine-phantom', error));
+        }
       } 
     );
   }
