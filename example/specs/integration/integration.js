@@ -7,7 +7,7 @@ describe('Integration tests', function() {
     expect(1 + 1).toEqual(3);
   });
 
-  xit('should be pending', function() {
+ xit('should be pending', function() {
   
   });
 

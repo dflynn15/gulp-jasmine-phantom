@@ -2,12 +2,11 @@
 
 // Jasmine references the index.js in this repository
 var gulp = require('gulp'),
-  jasmine = require('../'),
-  watch = require('gulp-watch');
+  jasmine = require('../');
 
-// Default unit test
-gulp.task('default', function () {
-	return gulp.src('specs/unit/**.js').pipe(jasmine());
+
+gulp.task('unit', function() {
+    return gulp.src('specs/unit/**.js').pipe(jasmine());
 });
 
 gulp.task('test-unit-path', function() {
@@ -37,7 +36,11 @@ gulp.task('test-path', function() {
 
 
 gulp.task('dev', function() {
-    gulp.watch('./*.js', ['test-integration']);
+    gulp.watch('specs/**/*.js', ['unit']);
 });
 
 gulp.task('multiple', ['default', 'test-integration']);
+
+gulp.task('all', ['unit', 'test-unit-path', 'test-integration', 'test-path', 'multiple']);
+
+gulp.task('default', []);
