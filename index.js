@@ -5,7 +5,6 @@ var path = require('path'),
     handlebar = require('handlebars'),
     fs = require('fs'),
     execFile = require('child_process').execFile,
-    filePaths = [],
     jasmineCss = path.join(__dirname, '/vendor/jasmine-2.0/jasmine.css'),
     jasmineJs = [
       path.join(__dirname, '/vendor/jasmine-2.0/jasmine.js'),
@@ -91,7 +90,7 @@ module.exports = function (options) {
 
     // Reference to the file paths piped in
     gutil.log('Running Jasmine with PhantomJS');
-    
+    var filePaths = []; 
     return through.obj(
       function (file, encoding, callback) {
         
@@ -117,6 +116,7 @@ module.exports = function (options) {
       terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
 
   gutil.log('Running Jasmine with minijasminenode2');
+  var filePaths = [];
   return through.obj(
       function(file, encoding, callback) {
         if (file.isNull()) {
