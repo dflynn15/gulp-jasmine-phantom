@@ -39,3 +39,5 @@ gulp.task('test-path', function() {
 gulp.task('dev', function() {
     gulp.watch('./*.js', ['test-integration']);
 });
+
+gulp.task('multiple', ['default', 'test-integration']);
