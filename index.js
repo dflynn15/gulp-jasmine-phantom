@@ -100,9 +100,9 @@ function compileRunner(options) {
 
 module.exports = function (options) {
   var filePaths = [],
-      miniJasmineLib = require('minijasminenode2'),
+      miniJasmineLib = requireUncached('minijasminenode2'),
       terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
- 
+
   gulpOptions = options || {};
 
   if(!!gulpOptions.integration) {
@@ -114,6 +114,7 @@ module.exports = function (options) {
         }
         if (file.isStream()) {
           callback(new gutil.PluginError('gulp-jasmine-phantom', 'Streaming not supported'));
+          return;
         }
         filePaths.push(file.path);
         callback(null, file);
@@ -144,6 +145,20 @@ module.exports = function (options) {
         callback(new gutil.PluginError('gulp-jasmine-phantom', 'Streaming not supported'));
         return;
       }
+
+      /**
+      * Get the cache object of the specs.js file,
+      * get its children and delete the childrens cache
+      */
+      var modId = require.resolve(path.resolve(file.path));
+      var files = require.cache[modId];
+      if (typeof files !== 'undefined') {
+        for (var i in files.children) {
+          delete require.cache[files.children[i].id];
+        }
+      }
+      delete require.cache[modId];
+
       miniJasmineLib.addSpecs(file.path);
       filePaths.push(file.path);
       callback(null, file);
@@ -155,18 +170,21 @@ module.exports = function (options) {
         miniJasmineLib.executeSpecs({
           reporter: terminalReporter,
           showColors: true,
-          includeStackTrace: true,
           onComplete: function(passed) {
-              if(gulpOptions.keepRunner) {
+            if(gulpOptions.keepRunner) {
+              try {
                 compileRunner({
                   files: filePaths,
                   onComplete: function() {
                     callback(null);
-                  }
+                  }    
                 });
-              } else {
-                callback(null);
+              } catch(error) {
+                callback(new gutil.PluginError('gulp-jasmine-phantom', error));
               }
+            } else {
+              callback(null);
+            }
           }
         });
 
