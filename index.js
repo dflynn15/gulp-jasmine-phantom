@@ -4,8 +4,18 @@ var path = require('path'),
     through = require('through2'),
     handlebar = require('handlebars'),
     fs = require('fs'),
-    execFile = require('child_process').execFile;
+    execFile = require('child_process').execFile,
+    requireUncached = require('require-uncached');
 
+/*
+ * Global variables
+ *
+ * gulpOptions: object of options passed in through Gulp
+ * jasmineCSS: string path to the jasmine.css file for the specRunner.html
+ * jasmineJS: array of string paths to JS needed for the specRunner.html
+ * specPath: string path to the tmp specRunner.html to be written out to
+ * specRunner: string path to the specRunner JS file needed in the specRunner.html
+ **/
 var gulpOptions = {},
     jasmineCss = path.join(__dirname, '/vendor/jasmine-2.0/jasmine.css'),
     jasmineJs = [
@@ -30,7 +40,7 @@ function cleanup(path) {
   * childArguments: Array of options to pass Phantom
   * [jasmine-runner.js, specRunner.html]
   **/
-function runPhantom(childArguments) {
+function runPhantom(childArguments, onComplete) {
     execFile('phantomjs', childArguments, function(error, stdout, stderr) {
       console.log(stdout);
 
@@ -42,30 +52,20 @@ function runPhantom(childArguments) {
       if(gulpOptions.keepRunner === undefined || gulpOptions.keepRunner === false) {
         cleanup(childArguments[1]);
       }
-    }.bind(this));
-}
-
-/**
- * Creates the specHTML file and triggers phantom to run if necessary
- **/
-function createRunner(newSpecPath, specCompiled, runFile) {
-  fs.writeFile(newSpecPath, specCompiled ,function(error) {
-    if (error) throw error;
-    
-    if(runFile) {
-      var childArgs = [
-        path.join(__dirname, '/lib/jasmine-runner.js'),
-        newSpecPath
-      ];
-      runPhantom(childArgs);
-    }
-  });
+      onComplete();
+    });
 }
 
 /*
  * Reads in the handlebar template and creates a data HTML object in memory to create
+ *
+ * options: list of options that can be passed to the function
+ *  files: paths to files being tested
+ *  onComplete: callback to call when everything is done
  **/
-function compileRunner(filePaths, integrationTest) {
+function compileRunner(options) {
+  var filePaths = options.files || [],
+      onComplete = options.onComplete || {};
   fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
     if (error) throw error;
 
@@ -82,7 +82,19 @@ function compileRunner(filePaths, integrationTest) {
       specPath = path.join(path.resolve(gulpOptions.keepRunner), '/specRunner.html');
     }
 
-    createRunner(specPath, specCompiled, integrationTest);
+    fs.writeFile(specPath, specCompiled , function(error) {
+      if (error) throw error;
+      
+      if(gulpOptions.integration) {
+        var childArgs = [
+          path.join(__dirname, '/lib/jasmine-runner.js'),
+          specPath 
+        ];
+        runPhantom(childArgs, onComplete);
+      } else {
+        onComplete();
+      }
+    });
   });
 }
 
@@ -108,7 +120,12 @@ module.exports = function (options) {
       }, function (callback) {
         gutil.log('Running Jasmine with PhantomJS');
         try {
-          compileRunner(filePaths, true);
+          compileRunner({
+            files: filePaths,
+            onComplete: function() {
+              callback(null);
+            }    
+          });
         } catch(error) {
           callback(new gutil.PluginError('gulp-jasmine-phantom', error));
         }
@@ -116,46 +133,47 @@ module.exports = function (options) {
     );
   }
 
-
   return through.obj(
-      function(file, encoding, callback) {
-        if (file.isNull()) {
-          callback(null, file);
-          return;
-        }
+    function(file, encoding, callback) {
+      if (file.isNull()) {
+        callback(null, file);
+        return;
+      }
         
-        if (file.isStream()) {
-          callback(new gutil.PluginError('gulp-jasmine-phantom', 'Streaming not supported'));
-          return;
-        }
-        
+      if (file.isStream()) {
+        callback(new gutil.PluginError('gulp-jasmine-phantom', 'Streaming not supported'));
+        return;
+      }
       miniJasmineLib.addSpecs(file.path);
       filePaths.push(file.path);
       callback(null, file);
     }, 
     function(callback) {
+      var stream = this;
       gutil.log('Running Jasmine with minijasminenode2');
       try {
         miniJasmineLib.executeSpecs({
-          reporter: new terminalReporter({}),
+          reporter: terminalReporter,
           showColors: true,
           includeStackTrace: true,
           onComplete: function(passed) {
-            if(passed) {
-              callback(null);
-            } else {
-              callback(new gutil.PluginError('gulp-jasmine-phantom', 'Tests failed', {showStack: false}));
-            }
+              if(gulpOptions.keepRunner) {
+                compileRunner({
+                  files: filePaths,
+                  onComplete: function() {
+                    callback(null);
+                  }
+                });
+              } else {
+                callback(null);
+              }
           }
         });
 
-        if(gulpOptions.keepRunner) {
-          compileRunner(filePaths);
-        }
-        
       } catch(error) {
         callback(new gutil.PluginError('gulp-jasmine-phantom', error));
       }
+
     }
   );
 };

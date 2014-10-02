@@ -36,7 +36,7 @@ gulp.task('test-path', function() {
 
 
 gulp.task('dev', function() {
-    gulp.watch('specs/**/*.js', ['unit']);
+    gulp.watch('specs/unit/*.js', ['unit']);
 });
 
 gulp.task('multiple', ['default', 'test-integration']);

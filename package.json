@@ -28,9 +28,10 @@
   ],
   "dependencies": {
     "gulp-util": "^3.0.0",
-    "minijasminenode2": "dflynn15/minijasminenode",
+    "minijasminenode2": "dflynn15/minijasminenode#duplicate-specs",
     "through2": "^0.6.1",
-    "handlebars": "^2.0.0"
+    "handlebars": "^2.0.0",
+    "require-uncached": "^1.0.2"
   },
   "devDependencies": {
     "JSON": "^1.0.0",
