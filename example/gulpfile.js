@@ -2,11 +2,16 @@
 
 // Jasmine references the index.js in this repository
 var gulp = require('gulp'),
-  jasmine = require('../');
+    minijasmine = require('gulp-jasmine'),
+    jasmine = require('../');
 
 
 gulp.task('unit', function() {
     return gulp.src('specs/unit/**.js').pipe(jasmine());
+});
+
+gulp.task('jasmine', function() {
+    return gulp.src('specs/unit/**.js').pipe(minijasmine());
 });
 
 gulp.task('test-unit-path', function() {
