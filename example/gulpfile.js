@@ -6,14 +6,12 @@ var gulp = require('gulp'),
     jasmine = require('../');
 
 
+// Default unit test
 gulp.task('unit', function() {
     return gulp.src('specs/unit/**.js').pipe(jasmine());
 });
 
-gulp.task('jasmine', function() {
-    return gulp.src('specs/unit/**.js').pipe(minijasmine());
-});
-
+// Unit test and keep the specRunner
 gulp.task('test-unit-path', function() {
   return gulp.src('specs/unit/**.js')
     .pipe(jasmine({
@@ -39,9 +37,19 @@ gulp.task('test-path', function() {
     }));
 });
 
+//Use require in an integration test
+gulp.task('test-require', function() {
+  return gulp.src('specs/integration/require-integration.js')
+    .pipe(jasmine({
+      integration: true,
+      vendor: 'example/vendor/*.js',
+      keepRunner: './'
+    }));
+});
 
+//Watch task
 gulp.task('dev', function() {
-    gulp.watch('specs/unit/*.js', ['unit']);
+    gulp.watch('specs/unit/*.js', ['test-require']);
 });
 
 gulp.task('multiple', ['default', 'test-integration']);

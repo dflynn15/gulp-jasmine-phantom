@@ -2,6 +2,7 @@
 var path = require('path'),
     gutil = require('gulp-util'),
     through = require('through2'),
+    glob = require('glob'),
     handlebar = require('handlebars'),
     fs = require('fs'),
     execFile = require('child_process').execFile,
@@ -24,6 +25,7 @@ var gulpOptions = {},
       path.join(__dirname, '/vendor/jasmine-2.0/console.js'),
       path.join(__dirname, '/vendor/jasmine-2.0/boot.js')
     ],
+    vendorJs = [],
     specPath = path.join(__dirname, '/lib/specRunner.html'),
     specRunner = path.join(__dirname, '/lib/specRunner.js');
 
@@ -69,12 +71,18 @@ function compileRunner(options) {
   fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
     if (error) throw error;
 
+    if(gulpOptions.vendor) {
+      glob.sync(gulpOptions.vendor, {cwd: __dirname}).forEach(function(newFile) {
+          vendorJs.push(path.join(__dirname, newFile));
+      });
+    }
     // Create the compile version of the specRunner from Handlebars
     var specData = handlebar.compile(data),
         specCompiled = specData({
           files: filePaths, 
           jasmine_css: jasmineCss, 
           jasmine_js: jasmineJs,
+          vendor_js: vendorJs,
           spec_runner: specRunner 
         });
     
@@ -104,6 +112,7 @@ module.exports = function (options) {
       terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
 
   gulpOptions = options || {};
+
 
   if(!!gulpOptions.integration) {
     return through.obj(

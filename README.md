@@ -10,7 +10,8 @@ Before you install `gulp-jasmine-phantom` please enusre that you have PhantomJS
 installed on your machine. The plugin assumes that the `phantomjs` binary is
 available in the PATH and executable from the command line.
 
-**If you do not have `phantomjs` installed please install following [these directions.](http://phantomjs.org/download.html)
+**If you do not have `phantomjs` installed please install following
+[these directions.](http://phantomjs.org/download.html)
 
 Install
 -----
@@ -21,7 +22,8 @@ $ npm install --save-dev gulp-jasmine-phantom
 
 Usage
 -----
-By default `gulp-jasmine-phantom` runs your tests with `minijasminenode` and not `phantomjs`.
+By default `gulp-jasmine-phantom` runs your tests with `minijasminenode` and
+not `phantomjs`.
 This is in an effort to keep your tasks running as quickly as possible!
 
 Basic useage:
@@ -48,7 +50,8 @@ gulp.task('default', function() {
 });
 ```
 
-Also, remember you can always run any multitude of tests using different Gulp tasks. For example, running unit tests and integration tests asynchronously.
+Also, remember you can always run any multitude of tests using different Gulp
+tasks. For example, running unit tests and integration tests asynchronously.
 
 ```javascript
 var gulp = require('gulp');
@@ -80,7 +83,18 @@ Run your tests with `phantomjs`
 Type: `boolean | string`
 Default: false
 
-Keep the `specRunner.html` file after build. If given a string, it will keep the runner at the string path.
+Keep the `specRunner.html` file after build. If given a string, it will keep
+the runner at the string path.
+
+#### vendor
+Type: `string`
+Default: null
+
+**Only use in combination with `integration: true`**
+
+This option allows you to pass in a glob (i.e.: `**/*.js`) that will include
+any vendor files that need to be present for your specs to run (like jQuery for
+example).
 
 Technologies Used
 -----------------
