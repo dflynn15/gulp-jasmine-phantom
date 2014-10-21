@@ -72,9 +72,17 @@ function compileRunner(options) {
     if (error) throw error;
 
     if(gulpOptions.vendor) {
-      glob.sync(gulpOptions.vendor, {cwd: __dirname}).forEach(function(newFile) {
-          vendorJs.push(path.join(__dirname, newFile));
-      });
+      if(typeof gulpOptions.vendor === 'string') {
+        glob.sync(gulpOptions.vendor).forEach(function(newFile) {
+            vendorJs.push(path.join(__dirname, newFile));
+        });
+      } else if (Array.isArray(gulpOptions.vendor)) {
+        gulpOptions.vendor.forEach(function(fileGlob) {
+          glob.sync(fileGlob).forEach(function(newFile) {
+            vendorJs.push(path.join(__dirname, newFile));
+          });
+        });
+      }
     }
     // Create the compile version of the specRunner from Handlebars
     var specData = handlebar.compile(data),

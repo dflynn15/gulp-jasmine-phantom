@@ -42,7 +42,7 @@ gulp.task('test-vendor', function() {
   return gulp.src('specs/integration/require-integration.js')
     .pipe(jasmine({
       integration: true,
-      vendor: 'example/vendor/*.js',
+      vendor: 'vendor/*.js',
       keepRunner: './'
     }));
 });
