@@ -38,7 +38,7 @@ gulp.task('test-path', function() {
 });
 
 //Use require in an integration test
-gulp.task('test-require', function() {
+gulp.task('test-vendor', function() {
   return gulp.src('specs/integration/require-integration.js')
     .pipe(jasmine({
       integration: true,
@@ -49,7 +49,7 @@ gulp.task('test-require', function() {
 
 //Watch task
 gulp.task('dev', function() {
-    gulp.watch('specs/unit/*.js', ['test-require']);
+    gulp.watch('specs/unit/*.js', ['test-vendor']);
 });
 
 gulp.task('multiple', ['default', 'test-integration']);
