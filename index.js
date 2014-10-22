@@ -74,12 +74,12 @@ function compileRunner(options) {
     if(gulpOptions.vendor) {
       if(typeof gulpOptions.vendor === 'string') {
         glob.sync(gulpOptions.vendor).forEach(function(newFile) {
-            vendorJs.push(path.join(__dirname, newFile));
+            vendorJs.push(path.join(process.cwd(), newFile));
         });
       } else if (Array.isArray(gulpOptions.vendor)) {
         gulpOptions.vendor.forEach(function(fileGlob) {
           glob.sync(fileGlob).forEach(function(newFile) {
-            vendorJs.push(path.join(__dirname, newFile));
+            vendorJs.push(path.join(process.cwd(), newFile));
           });
         });
       }
