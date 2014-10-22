@@ -87,7 +87,7 @@ Keep the `specRunner.html` file after build. If given a string, it will keep
 the runner at the string path.
 
 #### vendor
-Type: `string`
+Type: `string|array`
 Default: null
 
 **Only use in combination with `integration: true`**
@@ -95,6 +95,8 @@ Default: null
 This option allows you to pass in a glob (i.e.: `**/*.js`) that will include
 any vendor files that need to be present for your specs to run (like jQuery for
 example).
+
+You can also pass in an array of glob strings (i.e.: `["test/*.js", "vendor/jquery.js"]`).
 
 Technologies Used
 -----------------
