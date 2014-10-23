@@ -14,7 +14,7 @@ var path = require('path'),
  * gulpOptions: object of options passed in through Gulp
  * jasmineCSS: string path to the jasmine.css file for the specRunner.html
  * jasmineJS: array of string paths to JS needed for the specRunner.html
- * specPath: string path to the tmp specRunner.html to be written out to
+ * specHtml: string path to the tmp specRunner.html to be written out to
  * specRunner: string path to the specRunner JS file needed in the specRunner.html
  **/
 var gulpOptions = {},
@@ -26,7 +26,7 @@ var gulpOptions = {},
       path.join(__dirname, '/vendor/jasmine-2.0/boot.js')
     ],
     vendorJs = [],
-    specPath = path.join(__dirname, '/lib/specRunner.html'),
+    specHtml = path.join(__dirname, '/lib/specRunner.html'),
     specRunner = path.join(__dirname, '/lib/specRunner.js');
 
 /**
@@ -43,15 +43,16 @@ function cleanup(path) {
   * [jasmine-runner.js, specRunner.html]
   **/
 function runPhantom(childArguments, onComplete) {
+    console.log(childArguments);
     execFile('phantomjs', childArguments, function(error, stdout, stderr) {
-      console.log(stdout);
 
       if (stderr !== '') {
           gutil.log('gulp-jasmine-phantom: Failed to open test runner ' + gutil.colors.blue(childArguments[1]));
           gutil.log(gutil.colors.red('error: '), stderr);
       }
 
-      if(gulpOptions.keepRunner === undefined || gulpOptions.keepRunner === false) {
+      console.log(stdout);
+      if(gulpOptions.specHtml === undefined && (gulpOptions.keepRunner === undefined || gulpOptions.keepRunner === false)) {
         cleanup(childArguments[1]);
       }
       onComplete();
@@ -95,16 +96,16 @@ function compileRunner(options) {
         });
     
     if(gulpOptions.keepRunner !== undefined && typeof gulpOptions.keepRunner === 'string') {
-      specPath = path.join(path.resolve(gulpOptions.keepRunner), '/specRunner.html');
+      specHtml = path.join(path.resolve(gulpOptions.keepRunner), '/specRunner.html');
     }
 
-    fs.writeFile(specPath, specCompiled , function(error) {
+    fs.writeFile(specHtml, specCompiled , function(error) {
       if (error) throw error;
       
       if(gulpOptions.integration) {
         var childArgs = [
           path.join(__dirname, '/lib/jasmine-runner.js'),
-          specPath 
+          specHtml
         ];
         runPhantom(childArgs, onComplete);
       } else {
@@ -138,12 +139,19 @@ module.exports = function (options) {
       }, function (callback) {
         gutil.log('Running Jasmine with PhantomJS');
         try {
-          compileRunner({
-            files: filePaths,
-            onComplete: function() {
+          if(gulpOptions.specHtml) {
+            runPhantom(
+              [path.join(__dirname, '/lib/jasmine-runner.js'), path.resolve(gulpOptions.specHtml)], function() {
               callback(null);
-            }    
-          });
+            });
+          } else {
+            compileRunner({
+              files: filePaths,
+              onComplete: function() {
+                callback(null);
+              }    
+            });
+          }
         } catch(error) {
           callback(new gutil.PluginError('gulp-jasmine-phantom', error));
         }
