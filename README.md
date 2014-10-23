@@ -86,6 +86,15 @@ Default: false
 Keep the `specRunner.html` file after build. If given a string, it will keep
 the runner at the string path.
 
+#### specHtml
+Type: `string`
+Default: null
+
+**Only use in combination with `integration: true`**
+
+Allows you to specify the Html runner that Jasmine uses **only** during
+integration tests.
+
 #### vendor
 Type: `string|array`
 Default: null
