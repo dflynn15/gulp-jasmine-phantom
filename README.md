@@ -74,20 +74,20 @@ Options
 -------
 
 #### integration
-Type: `boolean`
+Type: `boolean` <br />
 Default: false
 
 Run your tests with `phantomjs`
 
 #### keepRunner
-Type: `boolean | string`
+Type: `boolean | string` <br />
 Default: false
 
 Keep the `specRunner.html` file after build. If given a string, it will keep
 the runner at the string path.
 
 #### specHtml
-Type: `string`
+Type: `string` <br />
 Default: null
 
 **Only use in combination with `integration: true`**
@@ -96,7 +96,7 @@ Allows you to specify the Html runner that Jasmine uses **only** during
 integration tests.
 
 #### vendor
-Type: `string|array`
+Type: `string|array` <br />
 Default: null
 
 **Only use in combination with `integration: true`**
