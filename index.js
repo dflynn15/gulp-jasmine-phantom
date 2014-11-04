@@ -43,19 +43,25 @@ function cleanup(path) {
   * [jasmine-runner.js, specRunner.html]
   **/
 function runPhantom(childArguments, onComplete) {
-    console.log(childArguments);
     execFile('phantomjs', childArguments, function(error, stdout, stderr) {
+      var success = null;
+      debugger;
+      if(error !== null) {
+        success = new gutil.PluginError('gulp-jasmine-phantomjs', 'Tests contained failures. Check logs for details.');
+      }
 
       if (stderr !== '') {
           gutil.log('gulp-jasmine-phantom: Failed to open test runner ' + gutil.colors.blue(childArguments[1]));
           gutil.log(gutil.colors.red('error: '), stderr);
+          success = new gutil.PluginError('gulp-jasmine-phantomjs', 'Failed to open test runner ' + gutil.colors.blue(childArguments[1]));
       }
 
-      console.log(stdout);
       if(gulpOptions.specHtml === undefined && (gulpOptions.keepRunner === undefined || gulpOptions.keepRunner === false)) {
         cleanup(childArguments[1]);
       }
-      onComplete();
+
+      console.log(stdout);
+      onComplete(success);
     });
 }
 
@@ -109,7 +115,7 @@ function compileRunner(options) {
         ];
         runPhantom(childArgs, onComplete);
       } else {
-        onComplete();
+        onComplete(null);
       }
     });
   });
@@ -147,8 +153,8 @@ module.exports = function (options) {
           } else {
             compileRunner({
               files: filePaths,
-              onComplete: function() {
-                callback(null);
+              onComplete: function(success) {
+                callback(success);
               }    
             });
           }
