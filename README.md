@@ -86,6 +86,12 @@ Default: false
 Keep the `specRunner.html` file after build. If given a string, it will keep
 the runner at the string path.
 
+#### includeStackTrace
+Type: `boolean` <br />
+Default: false
+
+Prints out a longer stack trace for errors.
+
 #### specHtml
 Type: `string` <br />
 Default: null
