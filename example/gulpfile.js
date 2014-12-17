@@ -19,6 +19,15 @@ gulp.task('test-unit-path', function() {
     }));
 });
 
+// Unit test with longer stack traces
+gulp.task('test-unit-trace', function() {
+  return gulp.src('specs/unit/**.js')
+    .pipe(jasmine({
+      includeStackTrace: true,
+      keepRunner: './'
+    }));
+});
+
 // Passing options in specifying integration tests
 gulp.task('test-integration', function() {
   return gulp.src('specs/integration/integration.js')

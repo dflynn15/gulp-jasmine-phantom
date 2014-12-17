@@ -201,6 +201,7 @@ module.exports = function (options) {
         miniJasmineLib.executeSpecs({
           reporter: terminalReporter,
           showColors: true,
+          includeStackTrace: gulpOptions.includeStackTrace,
           onComplete: function(passed) {
             if(gulpOptions.keepRunner) {
               try {
