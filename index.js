@@ -45,7 +45,7 @@ function cleanup(path) {
 function runPhantom(childArguments, onComplete) {
     execFile('phantomjs', childArguments, function(error, stdout, stderr) {
       var success = null;
-      debugger;
+
       if(error !== null) {
         success = new gutil.PluginError('gulp-jasmine-phantomjs', 'Tests contained failures. Check logs for details.');
       }
@@ -94,20 +94,20 @@ function compileRunner(options) {
     // Create the compile version of the specRunner from Handlebars
     var specData = handlebar.compile(data),
         specCompiled = specData({
-          files: filePaths, 
-          jasmine_css: jasmineCss, 
+          files: filePaths,
+          jasmine_css: jasmineCss,
           jasmine_js: jasmineJs,
           vendor_js: vendorJs,
-          spec_runner: specRunner 
+          spec_runner: specRunner
         });
-    
+
     if(gulpOptions.keepRunner !== undefined && typeof gulpOptions.keepRunner === 'string') {
       specHtml = path.join(path.resolve(gulpOptions.keepRunner), '/specRunner.html');
     }
 
     fs.writeFile(specHtml, specCompiled , function(error) {
       if (error) throw error;
-      
+
       if(gulpOptions.integration) {
         var childArgs = [
           path.join(__dirname, '/lib/jasmine-runner.js'),
@@ -155,13 +155,13 @@ module.exports = function (options) {
               files: filePaths,
               onComplete: function(success) {
                 callback(success);
-              }    
+              }
             });
           }
         } catch(error) {
           callback(new gutil.PluginError('gulp-jasmine-phantom', error));
         }
-      } 
+      }
     );
   }
 
@@ -171,7 +171,7 @@ module.exports = function (options) {
         callback(null, file);
         return;
       }
-        
+
       if (file.isStream()) {
         callback(new gutil.PluginError('gulp-jasmine-phantom', 'Streaming not supported'));
         return;
@@ -209,7 +209,7 @@ module.exports = function (options) {
                   files: filePaths,
                   onComplete: function() {
                     callback(null);
-                  }    
+                  }
                 });
               } catch(error) {
                 callback(new gutil.PluginError('gulp-jasmine-phantom', error));
