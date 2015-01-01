@@ -111,7 +111,8 @@ function compileRunner(options) {
       if(gulpOptions.integration) {
         var childArgs = [
           path.join(__dirname, '/lib/jasmine-runner.js'),
-          specHtml
+          specHtml,
+          gulpOptions.abortOnTestFailure
         ];
         runPhantom(childArgs, onComplete);
       } else {
