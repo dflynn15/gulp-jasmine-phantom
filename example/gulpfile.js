@@ -19,12 +19,13 @@ gulp.task('test-unit-path', function() {
     }));
 });
 
+// Throw a gulp error when tests fail
 gulp.task('test-integration-abort', function() {
   return gulp.src('specs/unit/**.js')
     .pipe(jasmine({
       keepRunner: './',
       integration: true,
-      abortOnTestFailure: true
+      abortOnFail: true
     }));
 });
 
