@@ -125,9 +125,3 @@ Technologies Used
 
 * Node
 * Gulp
-
-Team Members
-------------
-
-* [Daniel Flynn](https://github.com/dflynn15)
-* [Rob Tarr](https://github.com/robtarr)
