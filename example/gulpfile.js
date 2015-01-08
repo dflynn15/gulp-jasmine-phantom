@@ -75,6 +75,15 @@ gulp.task('test-runner', function() {
     }));
 });
 
+gulp.task('test-runner-abort', function() {
+  return gulp.src('specs/integration/require-integration.js')
+    .pipe(jasmine({
+      integration: true,
+      specHtml: 'specRunner.html',
+      abortOnFail: true
+    }));
+});
+
 //Watch task
 gulp.task('dev', function() {
     gulp.watch('specs/unit/*.js', ['test-vendor']);

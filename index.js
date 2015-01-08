@@ -57,6 +57,7 @@ function runPhantom(childArguments, onComplete) {
       }
 
       if(gulpOptions.specHtml === undefined && (gulpOptions.keepRunner === undefined || gulpOptions.keepRunner === false)) {
+        console.log('OMGOMGOMGOMG')
         cleanup(childArguments[1]);
       }
 
@@ -112,7 +113,7 @@ function compileRunner(options) {
         var childArgs = [
           path.join(__dirname, '/lib/jasmine-runner.js'),
           specHtml,
-          gulpOptions.abortOnFail
+          JSON.stringify(gulpOptions)
         ];
         runPhantom(childArgs, onComplete);
       } else {
@@ -148,8 +149,12 @@ module.exports = function (options) {
         try {
           if(gulpOptions.specHtml) {
             runPhantom(
-              [path.join(__dirname, '/lib/jasmine-runner.js'), path.resolve(gulpOptions.specHtml)], function() {
-              callback(null);
+              [
+                path.join(__dirname, '/lib/jasmine-runner.js'),
+                path.resolve(gulpOptions.specHtml),
+                JSON.stringify(gulpOptions)
+              ], function(success) {
+              callback(success);
             });
           } else {
             compileRunner({
