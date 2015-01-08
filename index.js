@@ -148,9 +148,15 @@ module.exports = function (options) {
         try {
           if(gulpOptions.specHtml) {
             runPhantom(
-              [path.join(__dirname, '/lib/jasmine-runner.js'), path.resolve(gulpOptions.specHtml)], function() {
-              callback(null);
-            });
+              [
+                path.join(__dirname, '/lib/jasmine-runner.js'),
+                path.resolve(gulpOptions.specHtml),
+                gulpOptions.abortOnFail
+              ],
+              function(success) {
+                callback(success);
+              }
+            );
           } else {
             compileRunner({
               files: filePaths,
