@@ -57,7 +57,6 @@ function runPhantom(childArguments, onComplete) {
       }
 
       if(gulpOptions.specHtml === undefined && (gulpOptions.keepRunner === undefined || gulpOptions.keepRunner === false)) {
-        console.log('OMGOMGOMGOMG')
         cleanup(childArguments[1]);
       }
 
