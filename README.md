@@ -108,6 +108,14 @@ Default: null
 Allows you to specify the Html runner that Jasmine uses **only** during
 integration tests.
 
+#### phantomjsPath
+Type: `string` <br />
+Default: phantomjs
+
+Allows you to specify the path to your phantomjs installation. After 
+`npm install phantomjs --save-dev` you can set the path to `./node_modules/phantomjs/lib/phantom/bin/phantomjs`
+
+
 #### vendor
 Type: `string|array` <br />
 Default: null
