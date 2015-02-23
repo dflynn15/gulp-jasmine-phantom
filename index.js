@@ -29,6 +29,12 @@ var gulpOptions = {},
     specHtml = path.join(__dirname, '/lib/specRunner.html'),
     specRunner = path.join(__dirname, '/lib/specRunner.js');
 
+    if (!gulpOptions.phantomjsPath)
+    {
+        gulpOptions.phantomjsPath = 'phantomjs';
+    }
+
+
 /**
   * Removes the specRunner.html file
   **/
@@ -43,7 +49,7 @@ function cleanup(path) {
   * [jasmine-runner.js, specRunner.html]
   **/
 function runPhantom(childArguments, onComplete) {
-    execFile('phantomjs', childArguments, function(error, stdout, stderr) {
+    execFile(gulpOptions.phantomjsPath, childArguments, function(error, stdout, stderr) {
       var success = null;
 
       if(error !== null) {
