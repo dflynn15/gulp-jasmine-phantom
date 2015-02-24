@@ -5,6 +5,7 @@ var path = require('path'),
     glob = require('glob'),
     handlebar = require('handlebars'),
     fs = require('fs'),
+    _ = require('lodash'),
     execFile = require('child_process').execFile,
     requireUncached = require('require-uncached');
 
@@ -18,6 +19,16 @@ var path = require('path'),
  * specRunner: string path to the specRunner JS file needed in the specRunner.html
  **/
 var gulpOptions = {},
+    defaults = {
+      abortOnFail      : false,
+      includeStackTrace: false,
+      integration      : false,
+      keepRunner       : false,
+      phantomjsPath    : 'phantomjs',
+      phantomjsFlags   : '',
+      specHtml         : null,
+      vendor           : null
+    },
     jasmineCss = path.join(__dirname, '/vendor/jasmine-2.0/jasmine.css'),
     jasmineJs = [
       path.join(__dirname, '/vendor/jasmine-2.0/jasmine.js'),
@@ -43,10 +54,12 @@ function cleanup(path) {
   * [jasmine-runner.js, specRunner.html]
   **/
 function runPhantom(childArguments, onComplete) {
-    execFile('phantomjs', childArguments, function(error, stdout, stderr) {
+    console.log(gulpOptions.phantomjsPath);
+    execFile(gulpOptions.phantomjsPath, childArguments, function(error, stdout, stderr) {
       var success = null;
 
       if(error !== null) {
+        console.log(error)
         success = new gutil.PluginError('gulp-jasmine-phantomjs', 'Tests contained failures. Check logs for details.');
       }
 
@@ -127,7 +140,7 @@ module.exports = function (options) {
       miniJasmineLib = requireUncached('minijasminenode2'),
       terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
 
-  gulpOptions = options || {};
+  gulpOptions = _.assign({}, defaults, options);
 
 
   if(!!gulpOptions.integration) {

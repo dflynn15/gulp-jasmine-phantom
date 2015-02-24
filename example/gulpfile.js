@@ -3,6 +3,7 @@
 // Jasmine references the index.js in this repository
 var gulp = require('gulp'),
     minijasmine = require('gulp-jasmine'),
+    path = require('path'),
     jasmine = require('../');
 
 
@@ -81,6 +82,15 @@ gulp.task('test-runner-abort', function() {
       integration: true,
       specHtml: 'specRunner.html',
       abortOnFail: true
+    }));
+});
+
+// To run this task make sure you first run `npm install phantomjs`
+gulp.task('phantom-path', function() {
+  return gulp.src('specs/integration/require-integration.js')
+    .pipe(jasmine({
+      integration: true,
+      phantomjsPath: path.join(__dirname, '/node_modules/phantomjs/lib/phantom/bin/phantomjs')
     }));
 });
 

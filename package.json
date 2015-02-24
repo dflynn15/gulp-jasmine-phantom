@@ -34,6 +34,7 @@
     "gulp": "^3.8.7",
     "gulp-jasmine": "^1.0.1",
     "jasmine": "^2.0.1",
-    "jasmine-fixture": "^1.0.8"
+    "jasmine-fixture": "^1.0.8",
+    "lodash": "^3.3.0"
   }
 }
