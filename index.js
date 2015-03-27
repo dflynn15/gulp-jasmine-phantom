@@ -78,18 +78,23 @@ function compileRunner(options) {
   fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
     if (error) throw error;
 
-    if(gulpOptions.vendor) {
-      if(typeof gulpOptions.vendor === 'string') {
-        glob.sync(gulpOptions.vendor).forEach(function(newFile) {
-            vendorJs.push(path.join(process.cwd(), newFile));
-        });
-      } else if (Array.isArray(gulpOptions.vendor)) {
-        gulpOptions.vendor.forEach(function(fileGlob) {
+    var vendorScripts = gulpOptions.vendor;
+
+    if (vendorScripts) {
+      if (typeof vendorScripts === 'string') {
+        vendorScripts = [vendorScripts];
+      }
+
+      vendorScripts.forEach(function(fileGlob) {
+        if (fileGlob.match(/^http/)) {
+          vendorJs.push(fileGlob);
+        }
+        else {
           glob.sync(fileGlob).forEach(function(newFile) {
             vendorJs.push(path.join(process.cwd(), newFile));
           });
-        });
-      }
+        }
+      });
     }
     // Create the compile version of the specRunner from Handlebars
     var specData = handlebar.compile(data),
