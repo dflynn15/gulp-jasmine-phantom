@@ -6,7 +6,7 @@ A gulp plugin that runs Jasmine tests with either PhantomJS or minijasminenode2.
 Dependencies
 ------------
 
-Before you install `gulp-jasmine-phantom` please enusre that you have PhantomJS
+Before you install `gulp-jasmine-phantom` please ensure that you have PhantomJS
 installed on your machine. The plugin assumes that the `phantomjs` binary is
 available in the PATH and executable from the command line.
 
@@ -22,11 +22,11 @@ $ npm install --save-dev gulp-jasmine-phantom
 
 Usage
 -----
-By default `gulp-jasmine-phantom` runs your tests with `minijasminenode` and
+By default, `gulp-jasmine-phantom` runs your tests with `minijasminenode` and
 not `phantomjs`.
-This is in an effort to keep your tasks running as quickly as possible!
+This is an effort to keep your tasks running as quickly as possible!
 
-Basic useage:
+Basic usage:
 ```javascript
 var gulp = require('gulp');
 var jasmine = require('gulp-jasmine-phantom');
@@ -93,7 +93,7 @@ Default: false
 Prints out a longer stack trace for errors.
 
 #### abortOnFail
-Type: `boolean`<br />
+Type: `boolean` <br />
 Default: false
 
 **Currently built with integration mode only** <br />
@@ -109,7 +109,7 @@ Allows you to specify the Html runner that Jasmine uses **only** during
 integration tests.
 
 #### vendor
-Type: `string|array` <br />
+Type: `string | array` <br />
 Default: null
 
 **Only use in combination with `integration: true`**
