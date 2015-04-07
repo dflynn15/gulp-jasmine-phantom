@@ -9,6 +9,10 @@ var path = require('path'),
     requireUncached = require('require-uncached');
 
 
+/**
+* @hgarcia
+* Took from karma-phantomjs-launcher
+**/
 var phantomJSExePath = function () {
   // If the path we're given by phantomjs is to a .cmd, it is pointing to a global copy.
   // Using the cmd as the process to execute causes problems cleaning up the processes
