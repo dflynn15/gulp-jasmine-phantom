@@ -8,6 +8,25 @@ var path = require('path'),
     execFile = require('child_process').execFile,
     requireUncached = require('require-uncached');
 
+
+/**
+* @hgarcia
+* Took from karma-phantomjs-launcher
+**/
+var phantomJSExePath = function () {
+  // If the path we're given by phantomjs is to a .cmd, it is pointing to a global copy.
+  // Using the cmd as the process to execute causes problems cleaning up the processes
+  // so we walk from the cmd to the phantomjs.exe and use that instead.
+
+  var phantomSource = require('phantomjs').path;
+
+  if (path.extname(phantomSource).toLowerCase() === '.cmd') {
+    return path.join(path.dirname( phantomSource ), '//node_modules//phantomjs//lib//phantom//phantomjs.exe');
+  }
+
+  return phantomSource;
+};
+
 /*
  * Global variables
  *
@@ -38,12 +57,13 @@ function cleanup(path) {
 
 /**
   * Executes Phantom with the specified arguments
-  * 
+  *
   * childArguments: Array of options to pass Phantom
   * [jasmine-runner.js, specRunner.html]
   **/
 function runPhantom(childArguments, onComplete) {
-    execFile('phantomjs', childArguments, function(error, stdout, stderr) {
+    var phantom = phantomJSExePath();
+    execFile(phantom, childArguments, function(error, stdout, stderr) {
       var success = null;
 
       if(error !== null) {
@@ -198,7 +218,7 @@ module.exports = function (options) {
       miniJasmineLib.addSpecs(file.path);
       filePaths.push(file.path);
       callback(null, file);
-    }, 
+    },
     function(callback) {
       var stream = this;
       gutil.log('Running Jasmine with minijasminenode2');
