@@ -105,7 +105,7 @@ Default: null
 
 **Only use in combination with `integration: true`**
 
-Allows you to specify the Html runner that Jasmine uses **only** during
+Allows you to specify the HTML runner that Jasmine uses **only** during
 integration tests.
 
 #### vendor
@@ -114,11 +114,12 @@ Default: null
 
 **Only use in combination with `integration: true`**
 
-This option allows you to pass in a glob (i.e.: `**/*.js`) that will include
-any vendor files that need to be present for your specs to run (like jQuery for
-example).
+A list of vendor scripts to import into the HTML runner, either as file 
+globs (e.g. `"**/*.js"`) or fully-qualified URLs (e.g. 
+`"http://my.cdn.com/jquery.js"`).
 
-You can also pass in an array of glob strings (i.e.: `["test/*.js", "vendor/jquery.js"]`).
+This option accepts either a single string or an array of strings (e.g. 
+`["test/*.js", "http://my.cdn.com/underscore.js"]`).
 
 Technologies Used
 -----------------
