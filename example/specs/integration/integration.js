@@ -1,19 +1,19 @@
 describe('Integration tests', function() {
-  it('should pass integration test', function() {
+  it('Should pass integration test', function() {
     expect(1 + 2).toEqual(3);
   });
 
-  it('should fail', function() {
+  it('Should fail', function() {
     expect(1 + 1).toEqual(3);
   });
 
-  xit('should be pending', function() {
-  
+  xit('Should be pending', function() {
+
   });
 
-  describe('a failure', function() {
-  
-    it('should fail again', function() {
+  describe('A failure', function() {
+
+    it('Should fail again', function() {
       expect(1 + 3).toEqual(3);
     });
   });
