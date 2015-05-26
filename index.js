@@ -18,16 +18,22 @@ var path = require('path'),
  * specRunner: string path to the specRunner JS file needed in the specRunner.html
  **/
 var gulpOptions = {},
-    jasmineCss = path.join(__dirname, '/vendor/jasmine-2.0/jasmine.css'),
-    jasmineJs = [
-      path.join(__dirname, '/vendor/jasmine-2.0/jasmine.js'),
-      path.join(__dirname, '/vendor/jasmine-2.0/jasmine-html.js'),
-      path.join(__dirname, '/vendor/jasmine-2.0/console.js'),
-      path.join(__dirname, '/vendor/jasmine-2.0/boot.js')
-    ],
+    jasmineCss, jasmineJs,
     vendorJs = [],
     specHtml = path.join(__dirname, '/lib/specRunner.html'),
     specRunner = path.join(__dirname, '/lib/specRunner.js');
+
+
+function configJasmine(version) {
+  version = version || '2.0';
+  jasmineCss = path.join(__dirname, '/vendor/jasmine-' + version + '/jasmine.css');
+  jasmineJs = [
+    path.join(__dirname, '/vendor/jasmine-' + version + '/jasmine.js'),
+    path.join(__dirname, '/vendor/jasmine-' + version + '/jasmine-html.js'),
+    path.join(__dirname, '/vendor/jasmine-' + version + '/console.js'),
+    path.join(__dirname, '/vendor/jasmine-' + version + '/boot.js')
+  ];
+}
 
 /**
   * Removes the specRunner.html file
@@ -134,6 +140,7 @@ module.exports = function (options) {
 
   gulpOptions = options || {};
 
+  configJasmine(gulpOptions.jasmineVersion);
 
   if(!!gulpOptions.integration) {
     return through.obj(

@@ -84,6 +84,15 @@ gulp.task('test-runner-abort', function() {
     }));
 });
 
+gulp.task('jasmine-version', function() {
+  return gulp.src('specs/integration/integration.js')
+    .pipe(jasmine({
+      jasmineVersion: '2.3',
+      integration: true,
+      abortOnFail: true
+    }));
+});
+
 //Watch task
 gulp.task('dev', function() {
     gulp.watch('specs/unit/*.js', ['test-vendor']);
