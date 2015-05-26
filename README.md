@@ -73,6 +73,12 @@ gulp.task('integrationTests', function() {
 Options
 -------
 
+#### jasmineVersion
+Type: `string` <br />
+Default: '2.0'
+
+Specifies the version of Jasmine you want to run. Possible options are in the `vendor/` folder. Just specify what `2.x` minor release you want.
+
 #### integration
 Type: `boolean` <br />
 Default: false
@@ -114,11 +120,11 @@ Default: null
 
 **Only use in combination with `integration: true`**
 
-A list of vendor scripts to import into the HTML runner, either as file 
-globs (e.g. `"**/*.js"`) or fully-qualified URLs (e.g. 
+A list of vendor scripts to import into the HTML runner, either as file
+globs (e.g. `"**/*.js"`) or fully-qualified URLs (e.g.
 `"http://my.cdn.com/jquery.js"`).
 
-This option accepts either a single string or an array of strings (e.g. 
+This option accepts either a single string or an array of strings (e.g.
 `["test/*.js", "http://my.cdn.com/underscore.js"]`).
 
 Technologies Used
