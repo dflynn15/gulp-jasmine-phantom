@@ -49,7 +49,7 @@ function cleanup(path) {
   * [jasmine-runner.js, specRunner.html]
   **/
 function runPhantom(childArguments, onComplete) {
-    execFile('phantomjs', childArguments, function(error, stdout, stderr) {
+    execFile((process.platform === 'win32' ? 'phantomjs.cmd' : 'phantomjs'), childArguments, function(error, stdout, stderr) {
       var success = null;
 
       if(error !== null) {
