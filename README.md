@@ -10,6 +10,10 @@ Before you install `gulp-jasmine-phantom` please ensure that you have PhantomJS
 installed on your machine. The plugin assumes that the `phantomjs` binary is
 available in the PATH and executable from the command line.
 
+If not, ensure you at least have `phantomjs` as an npm dependency. The module
+checks in `./node_modules/phantomjs` for an executable if you do not have it
+installed globally.
+
 **If you do not have `phantomjs` installed please install following
 [these directions.](http://phantomjs.org/download.html)
 

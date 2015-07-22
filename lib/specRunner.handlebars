@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" type="text/css" href="{{jasmine_css}}" />
-{{#each jasmine_js}}
+<link rel="stylesheet" type="text/css" href="{{jasmineCss}}" />
+{{#each jasmineJs}}
   <script type="text/javascript" src="{{this}}"></script>
 {{/each}}
-{{#each vendor_js}}
+{{#each vendorJs}}
   <script type="text/javascript" src="{{this}}"></script>
 {{/each}}
 {{#each files}}
   <script type="text/javascript" src="{{this}}"></script>
 {{/each}}
 
-<script type"text/javascript" src="{{spec_runner}}"></script>
+<script type"text/javascript" src="{{specRunner}}"></script>
 </head>
 <body>
   

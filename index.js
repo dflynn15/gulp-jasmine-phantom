@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 var path = require('path'),
     gutil = require('gulp-util'),
     through = require('through2'),
@@ -42,6 +42,45 @@ function cleanup(path) {
   fs.unlink(path);
 }
 
+function hasGlobalPhantom() {
+  execFile('phantomjs', [], function(error) {
+    if(error) {
+      return false;
+    }
+    return true;
+  });
+}
+
+/**
+ * execPhantom
+ *
+ * @param {string} phantom Path to phantom
+ * @param {array} childArguments Array of options to pass to Phantom
+ * @param {function} onComplete Callback function
+ */
+function execPhantom(phantom, childArguments, onComplete) {
+  execFile(phantom, childArguments, function(error, stdout, stderr) {
+    var success = null;
+
+    if(error !== null) {
+      success = new gutil.PluginError('gulp-jasmine-phantomjs', error.code + ': Tests contained failures. Check logs for details.');
+    }
+
+    if (stderr !== '') {
+      gutil.log('gulp-jasmine-phantom: Failed to open test runner ' + gutil.colors.blue(childArguments[1]));
+      gutil.log(gutil.colors.red('error: '), stderr);
+      success = new gutil.PluginError('gulp-jasmine-phantomjs', 'Failed to open test runner ' + gutil.colors.blue(childArguments[1]));
+    }
+
+    if(gulpOptions.specHtml === undefined && (gulpOptions.keepRunner === undefined || gulpOptions.keepRunner === false)) {
+      cleanup(childArguments[1]);
+    }
+
+    console.log(stdout);
+    onComplete(success);
+  });
+}
+
 /**
   * Executes Phantom with the specified arguments
   * 
@@ -49,26 +88,12 @@ function cleanup(path) {
   * [jasmine-runner.js, specRunner.html]
   **/
 function runPhantom(childArguments, onComplete) {
-    execFile('phantomjs', childArguments, function(error, stdout, stderr) {
-      var success = null;
-
-      if(error !== null) {
-        success = new gutil.PluginError('gulp-jasmine-phantomjs', 'Tests contained failures. Check logs for details.');
-      }
-
-      if (stderr !== '') {
-          gutil.log('gulp-jasmine-phantom: Failed to open test runner ' + gutil.colors.blue(childArguments[1]));
-          gutil.log(gutil.colors.red('error: '), stderr);
-          success = new gutil.PluginError('gulp-jasmine-phantomjs', 'Failed to open test runner ' + gutil.colors.blue(childArguments[1]));
-      }
-
-      if(gulpOptions.specHtml === undefined && (gulpOptions.keepRunner === undefined || gulpOptions.keepRunner === false)) {
-        cleanup(childArguments[1]);
-      }
-
-      console.log(stdout);
-      onComplete(success);
-    });
+  if(hasGlobalPhantom()) {
+    execPhantom('phantomjs', childArguments, onComplete);
+  } else {
+    gutil.log(gutil.colors.yellow('gulp-jasmine-phantom: Global Phantom undefined, trying to execute from node_modules/phantomjs'));
+    execPhantom(__dirname + '/node_modules/phantomjs/bin/phantomjs', childArguments, onComplete);
+  }
 }
 
 /*
@@ -82,7 +107,9 @@ function compileRunner(options) {
   var filePaths = options.files || [],
       onComplete = options.onComplete || {};
   fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     var vendorScripts = gulpOptions.vendor;
 
@@ -106,10 +133,10 @@ function compileRunner(options) {
     var specData = handlebar.compile(data),
         specCompiled = specData({
           files: filePaths,
-          jasmine_css: jasmineCss,
-          jasmine_js: jasmineJs,
-          vendor_js: vendorJs,
-          spec_runner: specRunner
+          jasmineCss: jasmineCss,
+          jasmineJs: jasmineJs,
+          vendorJs: vendorJs,
+          specRunner: specRunner
         });
 
     if(gulpOptions.keepRunner !== undefined && typeof gulpOptions.keepRunner === 'string') {
@@ -117,7 +144,9 @@ function compileRunner(options) {
     }
 
     fs.writeFile(specHtml, specCompiled , function(error) {
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       if(gulpOptions.integration) {
         var childArgs = [
@@ -212,14 +241,13 @@ module.exports = function (options) {
       callback(null, file);
     }, 
     function(callback) {
-      var stream = this;
       gutil.log('Running Jasmine with minijasminenode2');
       try {
         miniJasmineLib.executeSpecs({
           reporter: terminalReporter,
           showColors: true,
           includeStackTrace: gulpOptions.includeStackTrace,
-          onComplete: function(passed) {
+          onComplete: function() {
             if(gulpOptions.keepRunner) {
               try {
                 compileRunner({
