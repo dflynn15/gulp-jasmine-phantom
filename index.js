@@ -6,6 +6,7 @@ var path = require('path'),
     handlebar = require('handlebars'),
     fs = require('fs'),
     execFile = require('child_process').execFile,
+    exec = require('child_process').execSync,
     requireUncached = require('require-uncached');
 
 /*
@@ -43,12 +44,12 @@ function cleanup(path) {
 }
 
 function hasGlobalPhantom() {
-  execFile('phantomjs', [], function(error) {
-    if(error) {
-      return false;
-    }
-    return true;
-  });
+  try {
+    exec('which phantomjs');
+  } catch (e) {
+    return false;
+  }
+  return true;
 }
 
 /**
