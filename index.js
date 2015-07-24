@@ -18,7 +18,8 @@ var path = require('path'),
  * specHtml: string path to the tmp specRunner.html to be written out to
  * specRunner: string path to the specRunner JS file needed in the specRunner.html
  **/
-var gulpOptions = {},
+var phantomExecutable = process.platform === 'win32' ? 'phantomjs.cmd' : 'phantomjs',
+    gulpOptions = {},
     jasmineCss, jasmineJs,
     vendorJs = [],
     specHtml = path.join(__dirname, '/lib/specRunner.html'),
@@ -44,10 +45,18 @@ function cleanup(path) {
 }
 
 function hasGlobalPhantom() {
-  try {
-    exec('which phantomjs');
-  } catch (e) {
-    return false;
+  if(process.platform === 'win32') {
+    try {
+      exec('where phantomjs');
+    } catch (e) {
+      return false;
+    }
+  } else {
+    try {
+      exec('which phantomjs');
+    } catch (e) {
+      return false;
+    }
   }
   return true;
 }
@@ -90,7 +99,7 @@ function execPhantom(phantom, childArguments, onComplete) {
   **/
 function runPhantom(childArguments, onComplete) {
   if(hasGlobalPhantom()) {
-    execPhantom('phantomjs', childArguments, onComplete);
+    execPhantom(phantomExecutable, childArguments, onComplete);
   } else {
     gutil.log(gutil.colors.yellow('gulp-jasmine-phantom: Global Phantom undefined, trying to execute from node_modules/phantomjs'));
     execPhantom(process.cwd() + '/node_modules/phantomjs/bin/phantomjs', childArguments, onComplete);
