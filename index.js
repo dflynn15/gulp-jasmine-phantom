@@ -102,7 +102,7 @@ function runPhantom(childArguments, onComplete) {
     execPhantom(phantomExecutable, childArguments, onComplete);
   } else {
     gutil.log(gutil.colors.yellow('gulp-jasmine-phantom: Global Phantom undefined, trying to execute from node_modules/phantomjs'));
-    execPhantom(process.cwd() + '/node_modules/phantomjs/bin/phantomjs', childArguments, onComplete);
+    execPhantom(process.cwd() + '/node_modules/.bin/' + phantomExecutable, childArguments, onComplete);
   }
 }
 
