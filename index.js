@@ -258,7 +258,7 @@ module.exports = function (options) {
         jasmine.addReporter(new terminalReporter(_.defaults(gulpOptions, {showColors: true})));
 
         jasmine.loadConfig({
-          random: true,
+          random: _.get(gulpOptions, 'random', false),
           spec_files: filePaths
         });
 
