@@ -22,18 +22,18 @@
     "spec"
   ],
   "dependencies": {
+    "glob": "^4.0.6",
     "gulp-util": "^3.0.0",
-    "minijasminenode2": "dflynn15/minijasminenode",
-    "through2": "^0.6.1",
     "handlebars": "^2.0.0",
+    "jasmine": "dflynn15/jasmine-npm",
+    "lodash": "^4.3.0",
     "require-uncached": "^1.0.2",
-    "glob": "^4.0.6"
+    "through2": "^0.6.1"
   },
   "devDependencies": {
     "JSON": "^1.0.0",
     "gulp": "^3.8.7",
     "gulp-jasmine": "^1.0.1",
-    "jasmine": "^2.0.1",
     "jasmine-fixture": "^1.0.8"
   }
 }
