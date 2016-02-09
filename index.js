@@ -1,13 +1,15 @@
 'use strict';
-var path = require('path'),
-    gutil = require('gulp-util'),
-    through = require('through2'),
-    glob = require('glob'),
-    handlebar = require('handlebars'),
-    fs = require('fs'),
-    execFile = require('child_process').execFile,
+var _ = require('lodash'),
     exec = require('child_process').execSync,
-    requireUncached = require('require-uncached');
+    execFile = require('child_process').execFile,
+    fs = require('fs'),
+    glob = require('glob'),
+    gutil = require('gulp-util'),
+    handlebar = require('handlebars'),
+    Jasmine = require('jasmine'),
+    path = require('path'),
+    requireUncached = require('require-uncached'),
+    through = require('through2');
 
 /*
  * Global variables
@@ -173,9 +175,7 @@ function compileRunner(options) {
 }
 
 module.exports = function (options) {
-  var filePaths = [],
-      miniJasmineLib = requireUncached('minijasminenode2'),
-      terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
+  var filePaths = [];
 
   gulpOptions = options || {};
 
@@ -246,34 +246,27 @@ module.exports = function (options) {
       }
       delete require.cache[modId];
 
-      miniJasmineLib.addSpecs(file.path);
-      filePaths.push(file.path);
+      filePaths.push(path.relative(process.cwd(), file.path));
       callback(null, file);
-    }, 
+    },
     function(callback) {
-      gutil.log('Running Jasmine with minijasminenode2');
+      gutil.log('Running Jasmine in Node');
       try {
-        miniJasmineLib.executeSpecs({
-          reporter: terminalReporter,
-          showColors: true,
-          includeStackTrace: gulpOptions.includeStackTrace,
-          onComplete: function() {
-            if(gulpOptions.keepRunner) {
-              try {
-                compileRunner({
-                  files: filePaths,
-                  onComplete: function() {
-                    callback(null);
-                  }
-                });
-              } catch(error) {
-                callback(new gutil.PluginError('gulp-jasmine-phantom', error));
-              }
-            } else {
-              callback(null);
-            }
-          }
+        var jasmine = new Jasmine(),
+            terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
+
+        jasmine.addReporter(new terminalReporter(_.defaults(gulpOptions, {showColors: true})));
+
+        jasmine.loadConfig({
+          random: true,
+          spec_files: filePaths
         });
+
+        jasmine.onComplete(function(passed) {
+          callback(null);
+        });
+
+        jasmine.execute();
 
       } catch(error) {
         callback(new gutil.PluginError('gulp-jasmine-phantom', error));
