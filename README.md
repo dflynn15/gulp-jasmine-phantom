@@ -81,12 +81,6 @@ gulp.task('integrationTests', function() {
 Options
 -------
 
-#### jasmineVersion
-Type: `string` <br />
-Default: '2.0'
-
-Specifies the version of Jasmine you want to run. Possible options are in the `vendor/` folder. Just specify what `2.x` minor release you want.
-
 #### integration
 Type: `boolean` <br />
 Default: false
@@ -134,6 +128,20 @@ globs (e.g. `"**/*.js"`) or fully-qualified URLs (e.g.
 
 This option accepts either a single string or an array of strings (e.g.
 `["test/*.js", "http://my.cdn.com/underscore.js"]`).
+
+#### jasmineVersion (integration tests only)
+Type: `string` <br />
+Default: '2.0'
+
+**Only use in combination with `integration: true`**
+
+Specifies the version of Jasmine you want to run. Possible options are in the `vendor/` folder. Just specify what `2.x` minor release you want.
+
+#### random (unit tests only)
+Type: 'boolean'<br />
+Default: false
+
+Allows you to run the unit tests in a semi-random order. The random seed will be printed out after the tests have completed to allow for easier debugging.
 
 Technologies Used
 -----------------
