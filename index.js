@@ -261,6 +261,10 @@ module.exports = function (options) {
           spec_files: filePaths
         });
 
+        if (_.has(gulpOptions, 'seed')) {
+          jasmine.seed(gulpOptions.seed);
+        }
+
         jasmine.onComplete(function(passed) {
           callback(null);
         });
