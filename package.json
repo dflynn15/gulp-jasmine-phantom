@@ -1,6 +1,6 @@
 {
   "name": "gulp-jasmine-phantom",
-  "version": "2.1.0",
+  "version": "3.0.0-beta",
   "description": "Jasmine 2.0 suite runner, optionally with PhantomJS",
   "license": "MIT",
   "repository": "dflynn15/gulp-jasmine-phantom",
@@ -27,7 +27,6 @@
     "handlebars": "^2.0.0",
     "jasmine": "dflynn15/jasmine-npm",
     "lodash": "^4.3.0",
-    "require-uncached": "^1.0.2",
     "through2": "^0.6.1"
   },
   "devDependencies": {

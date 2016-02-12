@@ -8,7 +8,6 @@ var _ = require('lodash'),
     handlebar = require('handlebars'),
     Jasmine = require('jasmine'),
     path = require('path'),
-    requireUncached = require('require-uncached'),
     through = require('through2');
 
 /*
