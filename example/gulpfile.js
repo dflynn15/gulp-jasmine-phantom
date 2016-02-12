@@ -11,6 +11,12 @@ gulp.task('unit', function() {
     return gulp.src('specs/unit/**.js').pipe(jasmine());
 });
 
+gulp.task('unit-random', function() {
+  return gulp.src('specs/unit/**.js').pipe(jasmine({
+    random: true
+  }));
+});
+
 // Unit test and keep the specRunner
 gulp.task('test-unit-path', function() {
   return gulp.src('specs/unit/**.js')

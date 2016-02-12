@@ -143,6 +143,11 @@ Default: false
 
 Allows you to run the unit tests in a semi-random order. The random seed will be printed out after the tests have completed to allow for easier debugging.
 
+#### seed (unit tests only)
+Type: 'number'<br />
+
+Provides a given seed to Jasmine to run the tests in.
+
 Technologies Used
 -----------------
 
