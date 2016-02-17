@@ -1,6 +1,6 @@
 {
   "name": "gulp-jasmine-phantom",
-  "version": "3.0.0-rc1",
+  "version": "3.0.0",
   "description": "Jasmine 2.0 suite runner, optionally with PhantomJS",
   "license": "MIT",
   "repository": "dflynn15/gulp-jasmine-phantom",
