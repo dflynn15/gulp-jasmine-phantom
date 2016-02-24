@@ -174,7 +174,6 @@ function compileRunner(options) {
 
 module.exports = function (options) {
   var filePaths = [],
-      miniJasmineLib = requireUncached('minijasminenode2'),
       terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
 
   gulpOptions = options || {};
@@ -221,6 +220,7 @@ module.exports = function (options) {
     );
   }
 
+  var miniJasmineLib = requireUncached('minijasminenode2');
   return through.obj(
     function(file, encoding, callback) {
       if (file.isNull()) {
