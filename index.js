@@ -62,15 +62,24 @@ function hasGlobalPhantom() {
   return true;
 }
 
+function processArgs(args) {
+    var arr = [];
+    for (var prop in args) {
+        arr[arr.length] = '--' + prop + '=' + args[prop];
+    }
+    return arr;
+}
+
 /**
  * execPhantom
  *
  * @param {string} phantom Path to phantom
+ * @param {array} phantomArguments Object
  * @param {array} childArguments Array of options to pass to Phantom
  * @param {function} onComplete Callback function
  */
-function execPhantom(phantom, childArguments, onComplete) {
-  execFile(phantom, childArguments, function(error, stdout, stderr) {
+function execPhantom(phantom, phantomArguments, childArguments, onComplete) {
+  execFile(phantom, processArgs(phantomArguments).concat(childArguments), function(error, stdout, stderr) {
     var success = null;
 
     if(error !== null) {
@@ -94,16 +103,16 @@ function execPhantom(phantom, childArguments, onComplete) {
 
 /**
   * Executes Phantom with the specified arguments
-  * 
+  *
   * childArguments: Array of options to pass Phantom
   * [jasmine-runner.js, specRunner.html]
   **/
-function runPhantom(childArguments, onComplete) {
+function runPhantom(childArguments, phantomArguments, onComplete) {
   if(hasGlobalPhantom()) {
-    execPhantom(phantomExecutable, childArguments, onComplete);
+    execPhantom(phantomExecutable, phantomArguments, childArguments, onComplete);
   } else {
     gutil.log(gutil.colors.yellow('gulp-jasmine-phantom: Global Phantom undefined, trying to execute from node_modules/phantomjs'));
-    execPhantom(process.cwd() + '/node_modules/.bin/' + phantomExecutable, childArguments, onComplete);
+    execPhantom(process.cwd() + '/node_modules/.bin/' + phantomExecutable, phantomArguments, childArguments, onComplete);
   }
 }
 
@@ -165,7 +174,7 @@ function compileRunner(options) {
           specHtml,
           JSON.stringify(gulpOptions)
         ];
-        runPhantom(childArgs, onComplete);
+        runPhantom(childArgs, options.phantomArguments, onComplete);
       } else {
         onComplete(null);
       }
@@ -202,12 +211,14 @@ module.exports = function (options) {
                 path.join(__dirname, '/lib/jasmine-runner.js'),
                 path.resolve(gulpOptions.specHtml),
                 JSON.stringify(gulpOptions)
-              ], function(success) {
+            ], options.phantomArguments,
+            function(success) {
               callback(success);
             });
           } else {
             compileRunner({
               files: filePaths,
+              phantomArguments: options.phantomArguments,
               onComplete: function(success) {
                 callback(success);
               }
