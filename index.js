@@ -21,6 +21,7 @@ var _ = require('lodash'),
  **/
 var phantomExecutable = process.platform === 'win32' ? 'phantomjs.cmd' : 'phantomjs',
     gulpOptions = {},
+    execOptions = {},
     jasmineCss, jasmineJs,
     vendorJs = [],
     specHtml = path.join(__dirname, '/lib/specRunner.html'),
@@ -68,9 +69,10 @@ function hasGlobalPhantom() {
  * @param {string} phantom Path to phantom
  * @param {array} childArguments Array of options to pass to Phantom
  * @param {function} onComplete Callback function
+ * @param {object} execOptions options to run Phantom
  */
-function execPhantom(phantom, childArguments, onComplete) {
-  execFile(phantom, childArguments, function(error, stdout, stderr) {
+function execPhantom(phantom, childArguments, onComplete, execOptions) {
+  execFile(phantom, childArguments, execOptions, function(error, stdout, stderr) {
     var success = null;
 
     if(error !== null) {
@@ -94,16 +96,16 @@ function execPhantom(phantom, childArguments, onComplete) {
 
 /**
   * Executes Phantom with the specified arguments
-  * 
+  *
   * childArguments: Array of options to pass Phantom
   * [jasmine-runner.js, specRunner.html]
   **/
-function runPhantom(childArguments, onComplete) {
+function runPhantom(childArguments, onComplete, execOptions) {
   if(hasGlobalPhantom()) {
-    execPhantom(phantomExecutable, childArguments, onComplete);
+    execPhantom(phantomExecutable, childArguments, onComplete, execOptions);
   } else {
     gutil.log(gutil.colors.yellow('gulp-jasmine-phantom: Global Phantom undefined, trying to execute from node_modules/phantomjs'));
-    execPhantom(process.cwd() + '/node_modules/.bin/' + phantomExecutable, childArguments, onComplete);
+    execPhantom(process.cwd() + '/node_modules/.bin/' + phantomExecutable, childArguments, onComplete, execOptions);
   }
 }
 
@@ -114,7 +116,7 @@ function runPhantom(childArguments, onComplete) {
  *  files: paths to files being tested
  *  onComplete: callback to call when everything is done
  **/
-function compileRunner(options) {
+function compileRunner(options, execOptions) {
   var filePaths = options.files || [],
       onComplete = options.onComplete || {};
   fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
@@ -165,7 +167,7 @@ function compileRunner(options) {
           specHtml,
           JSON.stringify(gulpOptions)
         ];
-        runPhantom(childArgs, onComplete);
+        runPhantom(childArgs, onComplete, execOptions);
       } else {
         onComplete(null);
       }
@@ -173,11 +175,11 @@ function compileRunner(options) {
   });
 }
 
-module.exports = function (options) {
+module.exports = function (options, execOptions) {
   var filePaths = [];
 
   gulpOptions = options || {};
-
+  execOptions = execOptions || {};
   configJasmine(gulpOptions.jasmineVersion);
 
   if(!!gulpOptions.integration) {
@@ -204,14 +206,14 @@ module.exports = function (options) {
                 JSON.stringify(gulpOptions)
               ], function(success) {
               callback(success);
-            });
+            }, execOptions);
           } else {
             compileRunner({
               files: filePaths,
               onComplete: function(success) {
                 callback(success);
               }
-            });
+            }, execOptions);
           }
         } catch(error) {
           callback(new gutil.PluginError('gulp-jasmine-phantom', error));

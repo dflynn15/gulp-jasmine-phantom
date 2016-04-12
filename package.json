@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "description": "Jasmine 2.0 suite runner, optionally with PhantomJS",
   "license": "MIT",
-  "repository": "dflynn15/gulp-jasmine-phantom",
+  "repository": "c3-e/gulp-jasmine-phantom",
   "engines": {
     "node": ">=0.12.0"
   },
