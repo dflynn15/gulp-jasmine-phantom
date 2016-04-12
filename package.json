@@ -4,6 +4,9 @@
   "description": "Jasmine 2.0 suite runner, optionally with PhantomJS",
   "license": "MIT",
   "repository": "c3-e/gulp-jasmine-phantom",
+  "publishConfig": {
+    "registry": "http://npmrepo.elasticbeanstalk.com"
+  },
   "engines": {
     "node": ">=0.12.0"
   },
