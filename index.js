@@ -35,6 +35,7 @@ function configJasmine(version) {
     path.join(__dirname, '/vendor/jasmine-' + version + '/jasmine.js'),
     path.join(__dirname, '/vendor/jasmine-' + version + '/jasmine-html.js'),
     path.join(__dirname, '/vendor/jasmine-' + version + '/console.js'),
+    path.join(__dirname, '/vendor/jasmine-' + version + '/jasmine2-junit.js'),
     path.join(__dirname, '/vendor/jasmine-' + version + '/boot.js')
   ];
 }
@@ -76,7 +77,8 @@ function execPhantom(phantom, childArguments, onComplete, execOptions) {
     var success = null;
 
     if(error !== null) {
-      success = new gutil.PluginError('gulp-jasmine-phantomjs', error.code + ': Tests contained failures. Check logs for details.');
+      console.log('Need to debug here');
+      // success = new gutil.PluginError('gulp-jasmine-phantomjs', error.code + ': Tests contained failures. Check logs for details.');
     }
 
     if (stderr !== '') {
