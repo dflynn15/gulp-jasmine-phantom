@@ -118,7 +118,8 @@ function runPhantom(childArguments, onComplete, execOptions) {
  **/
 function compileRunner(options, execOptions) {
   var filePaths = options.files || [],
-      onComplete = options.onComplete || {};
+      onComplete = options.onComplete || {},
+      vendorFiles = {};
   fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
     if (error) {
       throw error;
@@ -136,12 +137,21 @@ function compileRunner(options, execOptions) {
           vendorJs.push(fileGlob);
         }
         else {
-          glob.sync(fileGlob).forEach(function(newFile) {
+          glob.sync(fileGlob, {nosort: true}).forEach(function(newFile) {
             vendorJs.push(path.join(process.cwd(), newFile));
           });
         }
       });
+
     }
+
+    vendorJs.forEach(function(js) {
+      vendorFiles[js] = true;
+    });
+
+    //Get unique vendor files, because of brace-expanded patterns can result in the same file showing up multiple times
+    vendorJs = Object.keys(vendorFiles);
+
     // Create the compile version of the specRunner from Handlebars
     var specData = handlebar.compile(data),
         specCompiled = specData({
