@@ -21,6 +21,7 @@ var _ = require('lodash'),
  **/
 var phantomExecutable = process.platform === 'win32' ? 'phantomjs.cmd' : 'phantomjs',
     gulpOptions = {},
+    execOptions = {},
     jasmineCss, jasmineJs,
     vendorJs = [],
     specHtml = path.join(__dirname, '/lib/specRunner.html'),
@@ -34,6 +35,7 @@ function configJasmine(version) {
     path.join(__dirname, '/vendor/jasmine-' + version + '/jasmine.js'),
     path.join(__dirname, '/vendor/jasmine-' + version + '/jasmine-html.js'),
     path.join(__dirname, '/vendor/jasmine-' + version + '/console.js'),
+    path.join(__dirname, '/vendor/jasmine-' + version + '/jasmine2-junit.js'),
     path.join(__dirname, '/vendor/jasmine-' + version + '/boot.js')
   ];
 }
@@ -68,13 +70,15 @@ function hasGlobalPhantom() {
  * @param {string} phantom Path to phantom
  * @param {array} childArguments Array of options to pass to Phantom
  * @param {function} onComplete Callback function
+ * @param {object} execOptions options to run Phantom
  */
-function execPhantom(phantom, childArguments, onComplete) {
-  execFile(phantom, childArguments, function(error, stdout, stderr) {
+function execPhantom(phantom, childArguments, onComplete, execOptions) {
+  execFile(phantom, childArguments, execOptions, function(error, stdout, stderr) {
     var success = null;
 
     if(error !== null) {
-      success = new gutil.PluginError('gulp-jasmine-phantomjs', error.code + ': Tests contained failures. Check logs for details.');
+      console.log('Need to debug here');
+      // success = new gutil.PluginError('gulp-jasmine-phantomjs', error.code + ': Tests contained failures. Check logs for details.');
     }
 
     if (stderr !== '') {
@@ -94,16 +98,16 @@ function execPhantom(phantom, childArguments, onComplete) {
 
 /**
   * Executes Phantom with the specified arguments
-  * 
+  *
   * childArguments: Array of options to pass Phantom
   * [jasmine-runner.js, specRunner.html]
   **/
-function runPhantom(childArguments, onComplete) {
+function runPhantom(childArguments, onComplete, execOptions) {
   if(hasGlobalPhantom()) {
-    execPhantom(phantomExecutable, childArguments, onComplete);
+    execPhantom(phantomExecutable, childArguments, onComplete, execOptions);
   } else {
     gutil.log(gutil.colors.yellow('gulp-jasmine-phantom: Global Phantom undefined, trying to execute from node_modules/phantomjs'));
-    execPhantom(process.cwd() + '/node_modules/.bin/' + phantomExecutable, childArguments, onComplete);
+    execPhantom(process.cwd() + '/node_modules/.bin/' + phantomExecutable, childArguments, onComplete, execOptions);
   }
 }
 
@@ -114,9 +118,10 @@ function runPhantom(childArguments, onComplete) {
  *  files: paths to files being tested
  *  onComplete: callback to call when everything is done
  **/
-function compileRunner(options) {
+function compileRunner(options, execOptions) {
   var filePaths = options.files || [],
-      onComplete = options.onComplete || {};
+      onComplete = options.onComplete || {},
+      vendorFiles = {};
   fs.readFile(path.join(__dirname, '/lib/specRunner.handlebars'), 'utf8', function(error, data) {
     if (error) {
       throw error;
@@ -134,12 +139,21 @@ function compileRunner(options) {
           vendorJs.push(fileGlob);
         }
         else {
-          glob.sync(fileGlob).forEach(function(newFile) {
+          glob.sync(fileGlob, {nosort: true}).forEach(function(newFile) {
             vendorJs.push(path.join(process.cwd(), newFile));
           });
         }
       });
+
     }
+
+    vendorJs.forEach(function(js) {
+      vendorFiles[js] = true;
+    });
+
+    //Get unique vendor files, because of brace-expanded patterns can result in the same file showing up multiple times
+    vendorJs = Object.keys(vendorFiles);
+
     // Create the compile version of the specRunner from Handlebars
     var specData = handlebar.compile(data),
         specCompiled = specData({
@@ -165,7 +179,7 @@ function compileRunner(options) {
           specHtml,
           JSON.stringify(gulpOptions)
         ];
-        runPhantom(childArgs, onComplete);
+        runPhantom(childArgs, onComplete, execOptions);
       } else {
         onComplete(null);
       }
@@ -173,11 +187,11 @@ function compileRunner(options) {
   });
 }
 
-module.exports = function (options) {
+module.exports = function (options, execOptions) {
   var filePaths = [];
 
   gulpOptions = options || {};
-
+  execOptions = execOptions || {};
   configJasmine(gulpOptions.jasmineVersion);
 
   if(!!gulpOptions.integration) {
@@ -204,14 +218,14 @@ module.exports = function (options) {
                 JSON.stringify(gulpOptions)
               ], function(success) {
               callback(success);
-            });
+            }, execOptions);
           } else {
             compileRunner({
               files: filePaths,
               onComplete: function(success) {
                 callback(success);
               }
-            });
+            }, execOptions);
           }
         } catch(error) {
           callback(new gutil.PluginError('gulp-jasmine-phantom', error));
