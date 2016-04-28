@@ -107,6 +107,26 @@ function runPhantom(childArguments, onComplete) {
   }
 }
 
+function cleanPath(fPath) {
+  if (!!fPath.match(/:\/\//)) {
+    return fPath;
+  }
+
+  return 'file:///' + fPath.replace(/\\/g, '/');
+}
+
+function normalizePaths(files) {
+  _.forEach(files, function(val, key) {
+    if (_.isArray(val)) {
+      files[key] = normalizePaths(val);
+    } else {
+      files[key] = cleanPath(val);
+    }
+  });
+
+  return files;
+}
+
 /*
  * Reads in the handlebar template and creates a data HTML object in memory to create
  *
@@ -142,13 +162,13 @@ function compileRunner(options) {
     }
     // Create the compile version of the specRunner from Handlebars
     var specData = handlebar.compile(data),
-        specCompiled = specData({
+        specCompiled = specData(normalizePaths({
           files: filePaths,
           jasmineCss: jasmineCss,
           jasmineJs: jasmineJs,
           vendorJs: vendorJs,
           specRunner: specRunner
-        });
+        }));
 
     if(gulpOptions.keepRunner !== undefined && typeof gulpOptions.keepRunner === 'string') {
       specHtml = path.join(path.resolve(gulpOptions.keepRunner), '/specRunner.html');
