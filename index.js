@@ -19,7 +19,7 @@ var _ = require('lodash'),
  * specHtml: string path to the tmp specRunner.html to be written out to
  * specRunner: string path to the specRunner JS file needed in the specRunner.html
  **/
-var phantomExecutable = process.platform === 'win32' ? 'phantomjs.cmd' : 'phantomjs',
+var phantomExecutable = 'phantomjs',
     gulpOptions = {},
     jasmineCss, jasmineJs,
     vendorJs = [],
@@ -94,7 +94,7 @@ function execPhantom(phantom, childArguments, onComplete) {
 
 /**
   * Executes Phantom with the specified arguments
-  * 
+  *
   * childArguments: Array of options to pass Phantom
   * [jasmine-runner.js, specRunner.html]
   **/
@@ -140,15 +140,23 @@ function compileRunner(options) {
         }
       });
     }
+    var fixupPath = function(path) {
+      if (path.match(/^http/)) {
+        return path;
+      }
+
+      return "file:///" + path.replace(/\\/g, '/');
+    }
+
     // Create the compile version of the specRunner from Handlebars
     var specData = handlebar.compile(data),
-        specCompiled = specData({
-          files: filePaths,
-          jasmineCss: jasmineCss,
-          jasmineJs: jasmineJs,
-          vendorJs: vendorJs,
-          specRunner: specRunner
-        });
+      specCompiled = specData({
+        files: filePaths.map(fixupPath),
+        jasmineCss: fixupPath(jasmineCss),
+        jasmineJs: jasmineJs.map(fixupPath),
+        vendorJs: vendorJs.map(fixupPath),
+        specRunner: fixupPath(specRunner)
+      });
 
     if(gulpOptions.keepRunner !== undefined && typeof gulpOptions.keepRunner === 'string') {
       specHtml = path.join(path.resolve(gulpOptions.keepRunner), '/specRunner.html');
