@@ -107,6 +107,20 @@ function runPhantom(childArguments, onComplete) {
   }
 }
 
+/**
+ * Converts a file path into a form able to be loaded by phantom. An absolute path (e.g. c:\dir\file.js) will be converted to
+ * a file URL (e.g., file:///c:/dir/file.js)
+ *
+ * path: a file path to convert
+ */
+function fixupPath(path) {
+  if (path.match(/^http/)) {
+    return path;
+  }
+
+  return "file:///" + path.replace(/\\/g, '/');
+}
+
 /*
  * Reads in the handlebar template and creates a data HTML object in memory to create
  *
@@ -139,13 +153,6 @@ function compileRunner(options) {
           });
         }
       });
-    }
-    var fixupPath = function(path) {
-      if (path.match(/^http/)) {
-        return path;
-      }
-
-      return "file:///" + path.replace(/\\/g, '/');
     }
 
     // Create the compile version of the specRunner from Handlebars
