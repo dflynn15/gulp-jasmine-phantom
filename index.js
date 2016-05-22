@@ -94,7 +94,7 @@ function execPhantom(phantom, childArguments, onComplete) {
 
 /**
   * Executes Phantom with the specified arguments
-  * 
+  *
   * childArguments: Array of options to pass Phantom
   * [jasmine-runner.js, specRunner.html]
   **/
@@ -159,9 +159,9 @@ function compileRunner(options) {
         throw error;
       }
 
-      if(gulpOptions.integration) {
+      if (gulpOptions.integration) {
         var childArgs = [
-          path.join(__dirname, '/lib/jasmine-runner.js'),
+          options.runner,
           specHtml,
           JSON.stringify(gulpOptions)
         ];
@@ -196,10 +196,11 @@ module.exports = function (options) {
       }, function (callback) {
         gutil.log('Running Jasmine with PhantomJS');
         try {
-          if(gulpOptions.specHtml) {
+          var runner = gulpOptions.runner || path.join(__dirname, '/lib/jasmine-runner.js');
+          if (gulpOptions.specHtml) {
             runPhantom(
               [
-                path.join(__dirname, '/lib/jasmine-runner.js'),
+                runner,
                 path.resolve(gulpOptions.specHtml),
                 JSON.stringify(gulpOptions)
               ], function(success) {
@@ -210,7 +211,8 @@ module.exports = function (options) {
               files: filePaths,
               onComplete: function(success) {
                 callback(success);
-              }
+              },
+              runner: runner
             });
           }
         } catch(error) {
