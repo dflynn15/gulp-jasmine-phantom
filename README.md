@@ -149,6 +149,15 @@ Default: false
 
 Allows you to run the unit tests in a semi-random order. The random seed will be printed out after the tests have completed to allow for easier debugging.
 
+#### reporter
+Type: `object`<br />
+Default: './lib/terminal-reporter.js'
+
+Allows you to specify a custom reporter (e.g.
+  `"reporter": require('jasmine-spec-reporter')`)
+
+This reporter will also pull in options from `gulpOptions`.
+
 #### seed (unit tests only)
 Type: 'number'<br />
 

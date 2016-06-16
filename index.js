@@ -269,9 +269,9 @@ module.exports = function (options) {
       gutil.log('Running Jasmine in Node');
       try {
         var jasmine = new Jasmine(),
-            terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
+            Reporter = gulpOptions.reporter || require('./lib/terminal-reporter.js').TerminalReporter;
 
-        jasmine.addReporter(new terminalReporter(_.defaults(gulpOptions, {showColors: true})));
+        jasmine.addReporter(new Reporter(_.defaults(gulpOptions, {showColors: true})));
 
         jasmine.loadConfig({
           random: _.get(gulpOptions, 'random', false),
