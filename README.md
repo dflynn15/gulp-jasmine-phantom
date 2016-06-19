@@ -163,6 +163,25 @@ Type: 'number'<br />
 
 Provides a given seed to Jasmine to run the tests in.
 
+#### phantomArguments
+Type: `object`
+Default: null
+
+**Only use in combination with `integration: true`**
+
+An optional object of arguments to pass to the phantomjs command.
+
+> Must be _valid_ phantomjs command line arguments.
+
+```javascript
+/* ... */
+'phantomArguments': {
+    'ignore-ssl-errors': 'true',
+    'ssl-protocol': 'any'
+}
+/* ... */
+```
+
 Technologies Used
 -----------------
 
