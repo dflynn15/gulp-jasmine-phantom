@@ -8,7 +8,8 @@ var _ = require('lodash'),
     handlebar = require('handlebars'),
     Jasmine = require('jasmine'),
     path = require('path'),
-    through = require('through2');
+    through = require('through2'),
+    phantomjs = require('phantomjs-prebuilt');
 
 /*
  * Global variables
@@ -19,7 +20,7 @@ var _ = require('lodash'),
  * specHtml: string path to the tmp specRunner.html to be written out to
  * specRunner: string path to the specRunner JS file needed in the specRunner.html
  **/
-var phantomExecutable = 'phantomjs',
+var phantomExecutable = phantomjs.path,
     gulpOptions = {},
     jasmineCss, jasmineJs,
     vendorJs = [],
