@@ -108,6 +108,20 @@ function runPhantom(childArguments, onComplete) {
   }
 }
 
+/**
+ * Converts a file path into a form able to be loaded by phantom. An absolute path (e.g. c:\dir\file.js) will be converted to
+ * a file URL (e.g., file:///c:/dir/file.js)
+ *
+ * path: a file path to convert
+ */
+function fixupPath(path) {
+  if (path.match(/^http/)) {
+    return path;
+  }
+
+  return "file:///" + path.replace(/\\/g, '/');
+}
+
 /*
  * Reads in the handlebar template and creates a data HTML object in memory to create
  *
@@ -141,15 +155,16 @@ function compileRunner(options) {
         }
       });
     }
+
     // Create the compile version of the specRunner from Handlebars
     var specData = handlebar.compile(data),
-        specCompiled = specData({
-          files: filePaths,
-          jasmineCss: jasmineCss,
-          jasmineJs: jasmineJs,
-          vendorJs: vendorJs,
-          specRunner: specRunner
-        });
+      specCompiled = specData({
+        files: filePaths.map(fixupPath),
+        jasmineCss: fixupPath(jasmineCss),
+        jasmineJs: jasmineJs.map(fixupPath),
+        vendorJs: vendorJs.map(fixupPath),
+        specRunner: fixupPath(specRunner)
+      });
 
     if(gulpOptions.keepRunner !== undefined && typeof gulpOptions.keepRunner === 'string') {
       specHtml = path.join(path.resolve(gulpOptions.keepRunner), '/specRunner.html');
@@ -160,9 +175,9 @@ function compileRunner(options) {
         throw error;
       }
 
-      if(gulpOptions.integration) {
+      if (gulpOptions.integration) {
         var childArgs = [
-          path.join(__dirname, '/lib/jasmine-runner.js'),
+          options.runner,
           specHtml,
           JSON.stringify(gulpOptions)
         ];
@@ -197,10 +212,11 @@ module.exports = function (options) {
       }, function (callback) {
         gutil.log('Running Jasmine with PhantomJS');
         try {
-          if(gulpOptions.specHtml) {
+          var runner = gulpOptions.runner || path.join(__dirname, '/lib/jasmine-runner.js');
+          if (gulpOptions.specHtml) {
             runPhantom(
               [
-                path.join(__dirname, '/lib/jasmine-runner.js'),
+                runner,
                 path.resolve(gulpOptions.specHtml),
                 JSON.stringify(gulpOptions)
               ], function(success) {
@@ -211,7 +227,8 @@ module.exports = function (options) {
               files: filePaths,
               onComplete: function(success) {
                 callback(success);
-              }
+              },
+              runner: runner
             });
           }
         } catch(error) {
@@ -253,9 +270,9 @@ module.exports = function (options) {
       gutil.log('Running Jasmine in Node');
       try {
         var jasmine = new Jasmine(),
-            terminalReporter = require('./lib/terminal-reporter.js').TerminalReporter;
+            Reporter = gulpOptions.reporter || require('./lib/terminal-reporter.js').TerminalReporter;
 
-        jasmine.addReporter(new terminalReporter(_.defaults(gulpOptions, {showColors: true})));
+        jasmine.addReporter(new Reporter(_.defaults(gulpOptions, {showColors: true})));
 
         jasmine.loadConfig({
           random: _.get(gulpOptions, 'random', false),

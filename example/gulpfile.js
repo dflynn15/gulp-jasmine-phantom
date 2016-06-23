@@ -72,6 +72,14 @@ gulp.task('test-vendor', function() {
     }));
 });
 
+// Unit test with custom reporter
+gulp.task('test-unit-custom-reporter', function() {
+  return gulp.src('specs/unit/**.js')
+    .pipe(jasmine({
+      reporter: require('jasmine-spec-reporter'),
+      displayStacktrace: 'summary'
+    }));
+});
 
 gulp.task('test-runner', function() {
   return gulp.src('specs/integration/require-integration.js')

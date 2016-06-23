@@ -120,6 +120,12 @@ integration tests.
 Type: `string | array` <br />
 Default: null
 
+#### runner
+Type: `string` <br />
+Default: '/lib/jasmine-runner.js'
+
+Allows you to specify the javascript runner that jasmine uses when running tests.
+
 **Only use in combination with `integration: true`**
 
 A list of vendor scripts to import into the HTML runner, either as file
@@ -142,6 +148,15 @@ Type: 'boolean'<br />
 Default: false
 
 Allows you to run the unit tests in a semi-random order. The random seed will be printed out after the tests have completed to allow for easier debugging.
+
+#### reporter
+Type: `object`<br />
+Default: './lib/terminal-reporter.js'
+
+Allows you to specify a custom reporter (e.g.
+  `"reporter": require('jasmine-spec-reporter')`)
+
+This reporter will also pull in options from `gulpOptions`.
 
 #### seed (unit tests only)
 Type: 'number'<br />
