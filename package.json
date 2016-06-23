@@ -27,6 +27,7 @@
     "handlebars": "^2.0.0",
     "jasmine": "dflynn15/jasmine-npm",
     "lodash": "^4.3.0",
+    "phantomjs-prebuilt": "^2.1.7",
     "through2": "^0.6.1"
   },
   "devDependencies": {
