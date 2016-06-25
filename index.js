@@ -19,13 +19,24 @@ var _ = require('lodash'),
  * specHtml: string path to the tmp specRunner.html to be written out to
  * specRunner: string path to the specRunner JS file needed in the specRunner.html
  **/
-var phantomExecutable = 'phantomjs',
+var phantomExecutable = getExecuteablePath(),
     gulpOptions = {},
     jasmineCss, jasmineJs,
     vendorJs = [],
     specHtml = path.join(__dirname, '/lib/specRunner.html'),
     specRunner = path.join(__dirname, '/lib/specRunner.js');
 
+/*
+ * Taken straight from
+ * https://github.com/Medium/phantomjs/blob/master/install.js#L71-L73
+ */
+function getExecuteablePath() {
+  if (hasGlobalPhantom()) {
+    return process.platform === 'win32' ? 'phantomjs.cmd' : 'phantomjs';
+  }
+
+  return require('phantomjs').path;
+}
 
 function configJasmine(version) {
   version = version || '2.0';
@@ -99,12 +110,11 @@ function execPhantom(phantom, childArguments, onComplete) {
   * [jasmine-runner.js, specRunner.html]
   **/
 function runPhantom(childArguments, onComplete) {
-  if(hasGlobalPhantom()) {
-    execPhantom(phantomExecutable, childArguments, onComplete);
-  } else {
-    gutil.log(gutil.colors.yellow('gulp-jasmine-phantom: Global Phantom undefined, trying to execute from node_modules/phantomjs'));
-    execPhantom(process.cwd() + '/node_modules/.bin/' + phantomExecutable, childArguments, onComplete);
+  if(!hasGlobalPhantom()) {
+    gutil.log(gutil.colors.yellow('gulp-jasmine-phantom: Phantom was not found globally, trying to execute from node_modules/.bin/'));
   }
+
+  execPhantom(phantomExecutable, childArguments, onComplete);
 }
 
 /**
