@@ -30,10 +30,12 @@ var phantomExecutable = getExecuteablePath(),
  * Taken straight from
  * https://github.com/Medium/phantomjs/blob/master/install.js#L71-L73
  */
-function checkForExecutable() {
-  return platform.process === 'win32' ?
-        path.join(process.cwd(),'node_modules', '.bin', 'phantomjs.exe') :
-        path.join(process.cwd(),'node_modules', '.bin', 'phantomjs')
+function getExecuteablePath() {
+  if (hasGlobalPhantom()) {
+    return process.platform === 'win32' ? 'phantomjs.cmd' : 'phantomjs';
+  }
+
+  return require('phantomjs').path;
 }
 
 function configJasmine(version) {
