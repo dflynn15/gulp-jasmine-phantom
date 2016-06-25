@@ -6,20 +6,21 @@ A gulp plugin that runs Jasmine tests with either PhantomJS or minijasminenode2.
 Dependencies
 ------------
 
-This module uses `execSync` which is not available in any version of Node under `0.12.x`.
-If you have any specific concerns about upgrading versions of Node or reasons not use
-`execSync` feel free to open an issue!
 
 Before you install `gulp-jasmine-phantom` please ensure that you have PhantomJS
 installed on your machine. The plugin assumes that the `phantomjs` binary is
 available in the PATH and executable from the command line.
 
-If not, ensure you at least have `phantomjs` as an npm dependency. The module
+If not, ensure you at least have `phantomjs-prebuilt` (or `phantomjs` which has been deprecated) as an npm dependency. The module
 checks in `./node_modules/phantomjs` for an executable if you do not have it
 installed globally.
 
 **If you do not have `phantomjs` installed please install following
-[these directions.](http://phantomjs.org/download.html)
+[these directions.](http://phantomjs.org/download.html)**
+
+This module uses `execSync` which is not available in any version of Node under `0.12.x`.
+If you have any specific concerns about upgrading versions of Node or reasons not use
+`execSync` feel free to open an issue!
 
 Install
 -----
