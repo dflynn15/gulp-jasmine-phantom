@@ -275,6 +275,7 @@ module.exports = function (options) {
 
         jasmine.loadConfig({
           random: _.get(gulpOptions, 'random', false),
+          helpers: _.get(gulpOptions, 'vendor', undefined),
           spec_files: filePaths
         });
 
