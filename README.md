@@ -120,12 +120,6 @@ integration tests.
 Type: `string | array` <br />
 Default: null
 
-#### runner
-Type: `string` <br />
-Default: '/lib/jasmine-runner.js'
-
-Allows you to specify the javascript runner that jasmine uses when running tests.
-
 **Only use in combination with `integration: true`**
 
 A list of vendor scripts to import into the HTML runner, either as file
@@ -134,6 +128,12 @@ globs (e.g. `"**/*.js"`) or fully-qualified URLs (e.g.
 
 This option accepts either a single string or an array of strings (e.g.
 `["test/*.js", "http://my.cdn.com/underscore.js"]`).
+
+#### runner
+Type: `string` <br />
+Default: '/lib/jasmine-runner.js'
+
+Allows you to specify the javascript runner that jasmine uses when running tests.
 
 #### jasmineVersion (integration tests only)
 Type: `string` <br />
