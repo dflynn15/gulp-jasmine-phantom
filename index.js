@@ -283,7 +283,11 @@ module.exports = function (options) {
         }
 
         jasmine.onComplete(function(passed) {
-          callback(null);
+          if(!passed && gulpOptions.abortOnFail) {
+            callback(new gutil.PluginError('gulp-jasmine-phantom'));
+          }else{
+            callback(null);
+          }
         });
 
         jasmine.execute();
