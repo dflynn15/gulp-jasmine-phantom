@@ -284,7 +284,7 @@ module.exports = function (options) {
 
         jasmine.onComplete(function(passed) {
           if(!passed && gulpOptions.abortOnFail) {
-            callback(new gutil.PluginError('gulp-jasmine-phantom'));
+            callback(new gutil.PluginError('gulp-jasmine-phantom', 'not all specs passed'));
           }else{
             callback(null);
           }
