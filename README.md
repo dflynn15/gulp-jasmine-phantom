@@ -104,7 +104,6 @@ Prints out a longer stack trace for errors.
 Type: `boolean` <br />
 Default: false
 
-**Currently built with integration mode only** <br />
 Exits Gulp with an status of 1 that will halt any further Gulp tasks.
 
 #### specHtml
