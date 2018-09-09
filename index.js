@@ -42,7 +42,7 @@ function configJasmine(version) {
   * Removes the specRunner.html file
   **/
 function cleanup(path) {
-  fs.unlink(path);
+  fs.unlinkSync(path);
 }
 
 function hasGlobalPhantom() {
